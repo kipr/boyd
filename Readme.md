@@ -11,6 +11,8 @@ Published Daylite Messages
 ```
 "msg": {
   "format": string,
+  "width": uint32,
+  "height": uint32,
   "data": uint8[]
 }
 ```
