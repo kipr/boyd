@@ -33,7 +33,12 @@ int main(int argc, char *argv[])
     this_thread::sleep_for(milliseconds(static_cast<uint32_t>(1000.0 / fps)));
     if(!cap.isOpened())
     {
-      if(!cap.open(0)) continue;
+      if(!cap.open(0))
+      {
+        fps = 1;
+        continue;
+      }
+      fps = 20;
     }
     
     Mat m;
