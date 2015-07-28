@@ -1,4 +1,9 @@
-find_program(BSON_BIND_EXECUTABLE bson_bind)
+
+if(WIN32)
+  find_program(BSON_BIND_EXECUTABLE bson_bind PATHS "${PROJECT_SOURCE_DIR}/../prefix/usr/bin" NO_DEFAULT_PATH)
+else()
+  find_program(BSON_BIND_EXECUTABLE bson_bind)
+endif()
 
 function(add_bson_bind INCLUDES PATH_)
   get_filename_component(NAME ${PATH_} NAME_WE)
@@ -6,7 +11,7 @@ function(add_bson_bind INCLUDES PATH_)
                      COMMAND ${BSON_BIND_EXECUTABLE} ${PATH_} ${CMAKE_BINARY_DIR}/${NAME}.hpp
                      DEPENDS ${PATH_}
                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-  set(${INCLUDES} ${${INCLUDES}} ${NAME}.hpp PARENT_SCOPE)
+  set(${INCLUDES} ${${INCLUDES}} ${CMAKE_BINARY_DIR}/${NAME}.hpp PARENT_SCOPE)
 endfunction()
 
 macro(add_bson_binds INCLUDES)
