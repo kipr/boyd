@@ -5,7 +5,7 @@ Boyd
 Published Daylite Messages
 ==========================
 
-`camera/image_color`
+`camera/frame_data`
 -------------------
 
 ```
@@ -13,7 +13,34 @@ Published Daylite Messages
   "format": string,
   "width": uint32,
   "height": uint32,
-  "data": uint8[]
+  "data": uint8[],
+  "blobs": blob[]
+}
+```
+
+Subscribed Daylite Messages
+==========================
+
+`camera/heartbeat`
+-------------------
+
+```
+"msg": {
+  "frames": bool,
+  "blobs": bool
+}
+```
+The heartbeat includes flags for indicating whether the publisher needs frame and/or blob data.
+
+`camera/settings`
+-------------------
+
+```
+"msg": {
+  "width": uint16,
+  "height": uint16,
+  "config_base_path": string,
+  "config_name": string
 }
 ```
 
