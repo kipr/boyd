@@ -9,9 +9,19 @@ find_package(Daylite REQUIRED)
 find_package(BsonBind REQUIRED)
 find_package(OpenCV REQUIRED)
 
-include_directories(${CMAKE_BINARY_DIR} ${DAYLITE_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(BSONBINDS_DIR ${CMAKE_SOURCE_DIR}/bson_binds)
 
-add_bson_binds(BSON_BIND_INCLUDES image_color.bsonbind settings.bsonbind)
-add_executable(boyd boyd.cpp ${BSON_BIND_INCLUDES})
+file(GLOB SRCS ${SRC_DIR}/*.cpp)
+#file(GLOB INCLUDES ${INCLUDE_DIR}/*.hpp)
+file(GLOB BSONBINDS ${BSONBINDS_DIR}/*.bsonbind)
+
+include_directories(${CMAKE_BINARY_DIR} ${INCLUDE_DIR} ${DAYLITE_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
+
+add_bson_binds(BSON_BIND_INCLUDES ${BSONBINDS})
+add_executable(boyd ${SRCS} ${BSON_BIND_INCLUDES})
+#add_executable(test test/test.cpp)
 
 target_link_libraries(boyd ${DAYLITE_LIBRARIES} ${OPENCV_LIBRARIES})
+#target_link_libraries(test ${DAYLITE_LIBRARIES})

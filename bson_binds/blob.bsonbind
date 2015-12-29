@@ -1,0 +1,7 @@
+uint16 centroidX!
+uint16 centroidY!
+uint16 bBoxX!
+uint16 bBoxY!
+uint16 bBoxWidth!
+uint16 bBoxHeight!
+uint16 confidence!
