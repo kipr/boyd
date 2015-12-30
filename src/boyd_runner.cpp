@@ -1,6 +1,5 @@
 #include "boyd_runner.hpp"
 #include "settings.hpp"
-#include "heartbeat.hpp"
 
 #include <daylite/node.hpp>
 #include <daylite/spinner.hpp>
@@ -33,7 +32,6 @@ void BoydRunner::run()
   
   auto framePub = node->advertise(BoydRunner::frameTopic);
   auto settingsSub = node->subscribe(BoydRunner::settingsTopic, BoydRunner::receivedSettings);
-  auto beatSub  = node->subscribe(BoydRunner::beatTopic, &BoydRunner::receivedBeat);
   
   // Setup camera
   if(!camera.open(0)) {
@@ -47,29 +45,17 @@ void BoydRunner::run()
     // Spin daylite
     daylite::spinner::spin_once();
     
-    // If not active, just sleep
-    if(!framesActive && !blobsActive) {
-      std::this_thread::sleep_for(milliseconds(20));
-      continue;
+    // Only process/send frames if someone cares
+    if(framePub->subscriber_count() > 0) {
+      std::cout << "Num subscribers: " << framePub->subscriber_count() << std::endl;
+      
+      // Update camera
+      camera.update();
+    
+      // Publish frame and blobs
+      const bson_t *const imBson = camera.imageBson();
+      framePub->publish(imBson);
     }
-    
-    // If it has been 5 seconds since the last heartbeat, deactivate
-    auto currTime = steady_clock::now();
-    if(currTime - lastFramesBeat > seconds(5))
-      framesActive = false;
-    if(currTime - lastBlobsBeat > seconds(5))
-      blobsActive = false;
-    if(!framesActive && !blobsActive) {
-      std::this_thread::sleep_for(milliseconds(20));
-      continue;
-    }
-    
-    // Update camera
-    camera.update();
-    
-    // Publish frame and blobs
-    const bson_t *const imBson = camera.imageBson(framesActive, blobsActive);
-    framePub->publish(imBson);
     
     // Sleep
     std::this_thread::sleep_for(milliseconds(20));
@@ -97,32 +83,7 @@ void BoydRunner::receivedSettings(const bson_t *msg, void *)
   }
 }
 
-void BoydRunner::receivedBeat(const bson_t *msg, void *)
-{
-  using namespace bson_bind;
-  
-  std::cout << "Received beat" << std::endl;
-  
-  // Analyze message to figure out if we should send frames, blobs, or both
-  auto currTime = steady_clock::now();
-  heartbeat beat = heartbeat::unbind(msg);
-  if(beat.frames) {
-    BoydRunner::framesActive = true;
-    BoydRunner::lastFramesBeat = currTime;
-  }
-  if(beat.blobs) {
-    BoydRunner::blobsActive = true;
-    BoydRunner::lastBlobsBeat = currTime;
-  }
-}
-
 Camera BoydRunner::camera;
-
-time_point<steady_clock> BoydRunner::lastFramesBeat;
-time_point<steady_clock> BoydRunner::lastBlobsBeat;
-bool BoydRunner::framesActive = false;
-bool BoydRunner::blobsActive = false;
 
 const std::string BoydRunner::frameTopic = "camera/frame_data";
 const std::string BoydRunner::settingsTopic = "camera/settings";
-const std::string BoydRunner::beatTopic = "camera/heartbeat";

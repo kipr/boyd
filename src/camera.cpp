@@ -99,7 +99,7 @@ const ObjectVector *Camera::objects(int channelNum) const
   return m_channels[channelNum]->objects();
 }
 
-bson_t *Camera::imageBson(bool includeFrame, bool includeBlobs) const
+bson_t *Camera::imageBson() const
 {
   bson_bind::frame_data fd;
   fd.format = "bgr8";

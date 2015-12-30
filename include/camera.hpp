@@ -32,7 +32,7 @@ public:
   void setConfig(const Config &config);
   
   const ObjectVector *objects(int channelNum) const;
-  bson_t *imageBson(bool includeFrame, bool includeBlobs) const;
+  bson_t *imageBson() const;
   
 private:
   void updateChannelsFromConfig();
