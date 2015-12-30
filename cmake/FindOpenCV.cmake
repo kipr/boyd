@@ -5,7 +5,7 @@ if(WIN32)
       ${OPENCV_DIR}/lib/opencv_core300.lib
       ${OPENCV_DIR}/lib/opencv_videoio300.lib)
 else()
-  set(OPENCV_LIBRARIES opencv_core opencv_videoio)
+  set(OPENCV_LIBRARIES opencv_core opencv_videoio opencv_highgui opencv_imgproc)
 endif()
 
 include(FindPackageHandleStandardArgs)
