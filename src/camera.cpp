@@ -60,7 +60,7 @@ bool Camera::update()
     auto it = m_channels.begin();
     for(; it != m_channels.end(); ++it)
       (*it)->invalidate();
-  }    
+  }
   
   return true;
 }
@@ -122,7 +122,7 @@ bson_t *Camera::imageBson() const
   
   fd.data.resize(fd.width * fd.height * 3);
   for(uint32_t r = 0; r < fd.height; ++r)
-    memcpy(fd.data.data() + r * fd.width, m_image.ptr(r), fd.width);
+    memcpy(fd.data.data() + r * fd.width, m_image.ptr(r), fd.width * 3);
   
   return fd.bind();
 }
