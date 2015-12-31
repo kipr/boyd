@@ -23,11 +23,11 @@ public:
   bool close();
   bool update();
   
-  void setWidth(const unsigned width);
-  void setHeight(const unsigned height);
+  void setWidth(const int width);
+  void setHeight(const int height);
   
-  unsigned width() const;
-  unsigned height() const;
+  int width() const;
+  int height() const;
   
   void setConfig(const Config &config);
   
@@ -42,6 +42,9 @@ private:
   
   Config m_config;
   ChannelPtrVector m_channels;
+  
+  int m_width;
+  int m_height;
 };
 
 #endif

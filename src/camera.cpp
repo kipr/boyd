@@ -61,28 +61,30 @@ bool Camera::update()
     for(; it != m_channels.end(); ++it)
       (*it)->invalidate();
   }
-  
+    
   return true;
 }
 
-void Camera::setWidth(const unsigned width)
+void Camera::setWidth(const int width)
 {
   m_capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
+  m_width = width;
 }
 
-void Camera::setHeight(const unsigned height)
+void Camera::setHeight(const int height)
 {
   m_capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  m_height = height;
 }
 
-unsigned Camera::width() const
+int Camera::width() const
 {
-  return m_capture->get(cv::CAP_PROP_FRAME_WIDTH);
+  return m_width;
 }
 
-unsigned Camera::height() const
+int Camera::height() const
 {
-  return m_capture->get(cv::CAP_PROP_FRAME_HEIGHT);
+  return m_height;
 }
 
 void Camera::setConfig(const Config &config)
