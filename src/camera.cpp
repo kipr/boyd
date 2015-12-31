@@ -2,8 +2,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-
 #include <iostream>
+
+#include "channel_data.hpp"
 
 Camera::Camera()
   : m_capture(new cv::VideoCapture)
@@ -110,6 +111,7 @@ bson_t *Camera::imageBson() const
   
   const ObjectVector *const objs = this->objects(0);
   std::cout << "Found " << objs->size() << " blobs" << std::endl;
+  bson_bind::channel_data cd;
   for(Object obj : *objs) {
     bson_bind::blob b;
     b.centroidX = obj.centroidX;
@@ -119,8 +121,9 @@ bson_t *Camera::imageBson() const
     b.bBoxWidth = obj.bBoxWidth;
     b.bBoxHeight = obj.bBoxHeight;
     b.confidence = obj.confidence;
-    fd.blobs.push_back(b);
+    cd.blobs.push_back(b);
   }
+  fd.ch_data = cd;
   
   fd.data.resize(fd.width * fd.height * 3);
   for(uint32_t r = 0; r < fd.height; ++r)
