@@ -1,4 +1,5 @@
 #include "boyd_runner.hpp"
+#include "config.hpp"
 #include "settings.hpp"
 
 #include <daylite/node.hpp>
@@ -6,10 +7,7 @@
 
 #include <iostream>
 #include <thread>
-#include <chrono>
 
-using namespace std::chrono;
-using namespace std::placeholders;
 using namespace daylite;
 
 void BoydRunner::run()
@@ -58,7 +56,7 @@ void BoydRunner::run()
     }
     
     // TODO: This is an arbitrary sleep interval for testing purposes
-    std::this_thread::sleep_for(milliseconds(20));
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
   }
 }
 

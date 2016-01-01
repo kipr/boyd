@@ -1,11 +1,8 @@
 #ifndef _BOYD_RUNNER_HPP_
 #define _BOYD_RUNNER_HPP_
 
-#include <memory>
 #include <bson.h>
 #include "camera.hpp"
-
-using namespace std::chrono;
 
 class BoydRunner
 {

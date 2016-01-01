@@ -31,7 +31,7 @@ public:
   
   void setConfig(const Config &config);
   
-  const ObjectVector *objects(int channelNum) const;
+  const ObjectVector *objects(const int channelNum) const;
   boyd::frame_data createFrameData() const;
   
 private:
