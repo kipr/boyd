@@ -2,7 +2,7 @@
 #define _CAMERA_HPP_
 
 #include <opencv2/videoio.hpp>
-#include <bson.h>
+#include "frame_data.hpp"
 #include "channel.hpp"
 #include "config.hpp"
 
@@ -32,7 +32,7 @@ public:
   void setConfig(const Config &config);
   
   const ObjectVector *objects(int channelNum) const;
-  bson_t *imageBson() const;
+  boyd::frame_data createFrameData() const;
   
 private:
   void updateChannelsFromConfig();

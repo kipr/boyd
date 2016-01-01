@@ -53,8 +53,8 @@ void BoydRunner::run()
       camera.update();
     
       // Publish frame and blobs over daylite
-      const bson_t *const imBson = camera.imageBson();
-      framePub->publish(imBson);
+      boyd::frame_data fd = camera.createFrameData();
+      framePub->publish(fd.bind());
     }
     
     // TODO: This is an arbitrary sleep interval for testing purposes

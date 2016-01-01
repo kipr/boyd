@@ -4,7 +4,6 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 
-#include "frame_data.hpp"
 #include "channel_data.hpp"
 
 Camera::Camera()
@@ -105,14 +104,14 @@ const ObjectVector *Camera::objects(int channelNum) const
   return m_channels[channelNum]->objects();
 }
 
-bson_t *Camera::imageBson() const
+boyd::frame_data Camera::createFrameData() const
 {
   using namespace boyd;
   
-  frame_data fd;
-  fd.format = "bgr8";
-  fd.width  = this->width();
-  fd.height = this->height();
+  frame_data ret;
+  ret.format = "bgr8";
+  ret.width  = this->width();
+  ret.height = this->height();
   
   for(int chanNum = 0; chanNum < m_channels.size(); ++chanNum) {
     const ObjectVector *const objs = this->objects(chanNum);
@@ -129,14 +128,14 @@ bson_t *Camera::imageBson() const
       b.confidence = obj.confidence;
       cd.blobs.push_back(b);
     }
-    fd.ch_data.push_back(cd);
+    ret.ch_data.push_back(cd);
   }
   
-  fd.data.resize(fd.width * fd.height * 3);
-  for(uint32_t r = 0; r < fd.height; ++r)
-    memcpy(fd.data.data() + r * fd.width * 3, m_image.ptr(r), fd.width * 3);
+  ret.data.resize(ret.width * ret.height * 3);
+  for(uint32_t r = 0; r < ret.height; ++r)
+    memcpy(ret.data.data() + r * ret.width * 3, m_image.ptr(r), ret.width * 3);
   
-  return fd.bind();
+  return ret;
 }
 
 void Camera::updateChannelsFromConfig()
