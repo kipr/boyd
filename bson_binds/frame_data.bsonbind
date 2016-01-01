@@ -2,4 +2,4 @@ string format!
 uint32 width!
 uint32 height!
 uint8[] data!
-channel_data ch_data!
+channel_data[] ch_data!

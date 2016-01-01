@@ -109,21 +109,23 @@ bson_t *Camera::imageBson() const
   fd.width  = this->width();
   fd.height = this->height();
   
-  const ObjectVector *const objs = this->objects(0);
-  std::cout << "Found " << objs->size() << " blobs" << std::endl;
-  bson_bind::channel_data cd;
-  for(Object obj : *objs) {
-    bson_bind::blob b;
-    b.centroidX = obj.centroidX;
-    b.centroidY = obj.centroidY;
-    b.bBoxX = obj.bBoxX;
-    b.bBoxY = obj.bBoxY;
-    b.bBoxWidth = obj.bBoxWidth;
-    b.bBoxHeight = obj.bBoxHeight;
-    b.confidence = obj.confidence;
-    cd.blobs.push_back(b);
+  for(int chanNum = 0; chanNum < m_channels.size(); ++chanNum) {
+    const ObjectVector *const objs = this->objects(chanNum);
+    std::cout << "Channel " << chanNum << ": " << objs->size() << " blobs" << std::endl;
+    bson_bind::channel_data cd;
+    for(Object obj : *objs) {
+      bson_bind::blob b;
+      b.centroidX = obj.centroidX;
+      b.centroidY = obj.centroidY;
+      b.bBoxX = obj.bBoxX;
+      b.bBoxY = obj.bBoxY;
+      b.bBoxWidth = obj.bBoxWidth;
+      b.bBoxHeight = obj.bBoxHeight;
+      b.confidence = obj.confidence;
+      cd.blobs.push_back(b);
+    }
+    fd.ch_data.push_back(cd);
   }
-  fd.ch_data = cd;
   
   fd.data.resize(fd.width * fd.height * 3);
   for(uint32_t r = 0; r < fd.height; ++r)
