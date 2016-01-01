@@ -1,3 +1,5 @@
+# Data about a single blob
+
 %package boyd
 
 uint16 centroidX!

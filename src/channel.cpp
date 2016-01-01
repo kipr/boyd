@@ -8,12 +8,15 @@ Channel::Channel(const Config &config)
   m_valid(false)
 {
   m_objects.clear();
+  
+  // Get channel type from config
   const std::string type = config.stringValue("type");
   if(type.empty()) {
     std::cerr << "No type specified in config." << std::endl;
     return;
   }
   
+  // Choose channel implementation based on channel type
   m_impl = ChannelImplManager::channelImpl(type);
   if(!m_impl) {
     std::cerr << "Type " << type << " not found" << std::endl;

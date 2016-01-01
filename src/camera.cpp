@@ -9,7 +9,8 @@
 
 Camera::Camera()
   : m_capture(new cv::VideoCapture)
-{ 
+{
+  // Default to 160x120 images
   setWidth(160);
   setHeight(120);
 }
@@ -48,6 +49,7 @@ bool Camera::close()
 
 bool Camera::update()
 {
+  // Get a new frame
   if(!m_capture->read(m_image)) {
     m_image = cv::Mat();
     return false;
@@ -144,6 +146,7 @@ void Camera::updateChannelsFromConfig()
     delete *it;
   m_channels.clear();
   
+  // Populate channels based on current config
   m_config.clearGroup();
   m_config.beginGroup(CAMERA_GROUP);
   const int numChannels = m_config.intValue(CAMERA_CHANNEL_NUM_KEY);

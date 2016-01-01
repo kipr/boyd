@@ -33,35 +33,36 @@ void BoydRunner::run()
   auto framePub = node->advertise(BoydRunner::frameTopic);
   auto settingsSub = node->subscribe(BoydRunner::settingsTopic, BoydRunner::receivedSettings);
   
-  // Setup camera
+  // Initial camera setup
   if(!camera.open(0)) {
     std::cerr << "Failed to open camera!" << std::endl;
     return;
   }
   camera.setWidth(240);
   camera.setHeight(180);
-    
+  
+  // Run forever
   for(;;) {
-    // Spin daylite
     daylite::spinner::spin_once();
     
-    // Only process/send frames if someone cares
+    // Only process/send frames if someone cares about them
     if(framePub->subscriber_count() > 0) {
       std::cout << "Num subscribers: " << framePub->subscriber_count() << std::endl;
       
-      // Update camera
+      // Retreive a new frame
       camera.update();
     
-      // Publish frame and blobs
+      // Publish frame and blobs over daylite
       const bson_t *const imBson = camera.imageBson();
       framePub->publish(imBson);
     }
     
-    // Sleep
+    // TODO: This is an arbitrary sleep interval for testing purposes
     std::this_thread::sleep_for(milliseconds(20));
   }
 }
 
+// Called when we receive setting changes
 void BoydRunner::receivedSettings(const bson_t *msg, void *)
 {
   using namespace boyd;
@@ -75,6 +76,7 @@ void BoydRunner::receivedSettings(const bson_t *msg, void *)
   if(s.config_base_path.some())
     ConfigPath::setBasePath(s.config_base_path.unwrap());
   if(s.config_name.some()) {
+    // Try to load the new config
     const Config *const newConfig = Config::load(ConfigPath::pathTo(s.config_name.unwrap()));
     if(!newConfig)
       std::cerr << "Failed to load the new config file" << std::endl;
@@ -85,5 +87,6 @@ void BoydRunner::receivedSettings(const bson_t *msg, void *)
 
 Camera BoydRunner::camera;
 
+// Constant strings for each relevant daylite topic
 const std::string BoydRunner::frameTopic = "camera/frame_data";
 const std::string BoydRunner::settingsTopic = "camera/settings";

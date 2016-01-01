@@ -1,3 +1,5 @@
+# Raw pixels and processed blobs for a single frame
+
 %package boyd
 
 string format!
