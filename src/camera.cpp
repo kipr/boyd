@@ -149,7 +149,8 @@ void Camera::updateChannelsFromConfig()
   m_config.clearGroup();
   m_config.beginGroup(CAMERA_GROUP);
   const int numChannels = m_config.intValue(CAMERA_CHANNEL_NUM_KEY);
-  for(int i  = 0; i < numChannels; ++i) {
+  const int numSupported = std::min(numChannels, 4); // Max 4 channels
+  for(int i  = 0; i < numSupported; ++i) {
     std::stringstream stream;
     stream << CAMERA_CHANNEL_GROUP_PREFIX;
     stream << i;
