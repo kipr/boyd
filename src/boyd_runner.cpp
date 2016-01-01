@@ -64,7 +64,7 @@ void BoydRunner::run()
 
 void BoydRunner::receivedSettings(const bson_t *msg, void *)
 {
-  using namespace bson_bind;
+  using namespace boyd;
   
   std::cout << "Received settings" << std::endl;
   settings s = settings::unbind(msg);

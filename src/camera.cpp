@@ -104,7 +104,9 @@ const ObjectVector *Camera::objects(int channelNum) const
 
 bson_t *Camera::imageBson() const
 {
-  bson_bind::frame_data fd;
+  using namespace boyd;
+  
+  frame_data fd;
   fd.format = "bgr8";
   fd.width  = this->width();
   fd.height = this->height();
@@ -112,9 +114,9 @@ bson_t *Camera::imageBson() const
   for(int chanNum = 0; chanNum < m_channels.size(); ++chanNum) {
     const ObjectVector *const objs = this->objects(chanNum);
     std::cout << "Channel " << chanNum << ": " << objs->size() << " blobs" << std::endl;
-    bson_bind::channel_data cd;
+    channel_data cd;
     for(Object obj : *objs) {
-      bson_bind::blob b;
+      blob b;
       b.centroidX = obj.centroidX;
       b.centroidY = obj.centroidY;
       b.bBoxX = obj.bBoxX;

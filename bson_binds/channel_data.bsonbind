@@ -1,2 +1,5 @@
 # The blob data for a single channel
+
+%package boyd
+
 blob[] blobs!

@@ -1,3 +1,5 @@
+%package boyd
+
 uint16 width
 uint16 height
 string config_base_path
