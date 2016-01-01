@@ -2,7 +2,7 @@
 #define _CAMERA_HPP_
 
 #include <opencv2/videoio.hpp>
-#include "frame_data.hpp"
+#include <bson.h>
 #include "channel.hpp"
 #include "config.hpp"
 

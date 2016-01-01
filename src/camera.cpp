@@ -4,6 +4,7 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 
+#include "frame_data.hpp"
 #include "channel_data.hpp"
 
 Camera::Camera()
