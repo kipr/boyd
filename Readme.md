@@ -28,6 +28,7 @@ Subscribed Daylite Messages
 "msg": {
   "width": uint16,
   "height": uint16,
+  "numMaxBlobs": uint16,
   "config_base_path": string,
   "config_name": string
 }

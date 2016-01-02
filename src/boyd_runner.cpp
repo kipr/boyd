@@ -74,6 +74,8 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     camera.setWidth(s.width.unwrap());
   if(s.height.some())
     camera.setHeight(s.height.unwrap());
+  if(s.maxNumBlobs.some())
+    BoydRunner::maxNumBlobs = s.maxNumBlobs.unwrap();
   if(s.config_base_path.some())
     ConfigPath::setBasePath(s.config_base_path.unwrap());
   if(s.config_name.some()) {
