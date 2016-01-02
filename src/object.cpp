@@ -6,9 +6,7 @@ Object::Object(const unsigned centroidX,
   const unsigned bBoxY,
   const unsigned bBoxWidth,
   const unsigned bBoxHeight,
-  const double confidence,
-  const char *data,
-  const size_t &dataLength)
+  const double confidence)
   : centroidX(centroidX),
   centroidY(centroidY),
   bBoxX(bBoxX),
@@ -16,14 +14,8 @@ Object::Object(const unsigned centroidX,
   bBoxWidth(bBoxWidth),
   bBoxHeight(bBoxHeight),
   bBoxArea(bBoxWidth * bBoxHeight),
-  confidence(confidence),
-  data(0),
-  dataLength(dataLength)
+  confidence(confidence)
   {
-    if(!data) return;
-    
-    this->data = new char[dataLength];
-    memcpy(this->data, data, dataLength);
   }
 
 Object::Object(const Object &rhs)
@@ -34,18 +26,6 @@ Object::Object(const Object &rhs)
   bBoxWidth(rhs.bBoxWidth),
   bBoxHeight(rhs.bBoxHeight),
   bBoxArea(rhs.bBoxArea),
-  confidence(rhs.confidence),
-  data(0),
-  dataLength(rhs.dataLength)
+  confidence(rhs.confidence)
 {
-  if(!rhs.data) return;
-  
-  this->data = new char[dataLength + 1];
-  memcpy(this->data, rhs.data, dataLength);
-  this->data[dataLength] = 0;
-}
-
-Object::~Object()
-{
-  delete[] data;
 }

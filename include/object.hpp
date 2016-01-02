@@ -12,11 +12,8 @@ public:
           const unsigned bBoxY,
           const unsigned bBoxWidth,
           const unsigned bBoxHeight,
-          const double confidence,
-          const char *data = 0,
-          const size_t &dataLength = 0);
+          const double confidence);
   Object(const Object &rhs);
-  ~Object();
     
   unsigned centroidX;
   unsigned centroidY;
@@ -26,8 +23,6 @@ public:
   unsigned bBoxHeight;
   unsigned long bBoxArea;
   double confidence;
-  char *data;
-  size_t dataLength;
 };
 
 typedef std::vector<Object> ObjectVector;
