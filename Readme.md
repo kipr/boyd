@@ -14,23 +14,12 @@ Published Daylite Messages
   "width": uint32,
   "height": uint32,
   "data": uint8[],
-  "blobs": blob[]
+  "ch_data": channel_data[]
 }
 ```
 
 Subscribed Daylite Messages
 ==========================
-
-`camera/heartbeat`
--------------------
-
-```
-"msg": {
-  "frames": bool,
-  "blobs": bool
-}
-```
-The heartbeat includes flags for indicating whether the publisher needs frame and/or blob data.
 
 `camera/settings`
 -------------------
