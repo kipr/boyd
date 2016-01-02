@@ -3,6 +3,7 @@ project(boyd)
 cmake_minimum_required(VERSION 2.8)
 
 add_definitions(-std=c++11)
+add_definitions(-g -pg)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") 
 find_package(Daylite REQUIRED)
@@ -21,7 +22,7 @@ include_directories(${CMAKE_BINARY_DIR} ${INCLUDE_DIR} ${DAYLITE_INCLUDE_DIRS} $
 
 add_bson_binds(BSON_BIND_INCLUDES ${BSONBINDS})
 add_executable(boyd ${SRCS} ${BSON_BIND_INCLUDES})
-#add_executable(test test/test.cpp)
+add_executable(test test/test.cpp)
 
 target_link_libraries(boyd ${DAYLITE_LIBRARIES} ${OPENCV_LIBRARIES})
-#target_link_libraries(test ${DAYLITE_LIBRARIES})
+target_link_libraries(test ${DAYLITE_LIBRARIES} ${OPENCV_LIBRARIES})
