@@ -38,6 +38,7 @@ Compilation
 
     cd /path/to/boyd
     mkdir build
+    cd build
     cmake ..
     make
 
@@ -45,4 +46,5 @@ Installation
 =============
 
     cd /path/to/boyd
+    cd build
     make install
