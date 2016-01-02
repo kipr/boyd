@@ -15,6 +15,8 @@ private:
   
   static Camera camera;
   
+  static int maxNumBlobs;
+  
   static const std::string frameTopic;
   static const std::string settingsTopic;
 };

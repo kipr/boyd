@@ -32,7 +32,7 @@ public:
   void setConfig(const Config &config);
   
   const ObjectVector *objects(const int channelNum) const;
-  boyd::frame_data createFrameData() const;
+  boyd::frame_data createFrameData(const int maxNumBlobs) const;
   
 private:
   void updateChannelsFromConfig();

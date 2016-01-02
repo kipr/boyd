@@ -104,7 +104,7 @@ const ObjectVector *Camera::objects(int channelNum) const
   return m_channels[channelNum]->objects();
 }
 
-boyd::frame_data Camera::createFrameData() const
+boyd::frame_data Camera::createFrameData(const int maxNumBlobs) const
 {
   using namespace boyd;
   
@@ -117,7 +117,9 @@ boyd::frame_data Camera::createFrameData() const
     const ObjectVector *const objs = this->objects(chanNum);
     std::cout << "Channel " << chanNum << ": " << objs->size() << " blobs" << std::endl;
     channel_data cd;
-    for(Object obj : *objs) {
+    const unsigned long numBlobs = std::min<unsigned long>(objs->size(), maxNumBlobs);
+    for(int i = 0; i < numBlobs; ++i) {
+      const Object &obj = objs->at(i);
       blob b;
       b.centroidX = obj.centroidX;
       b.centroidY = obj.centroidY;

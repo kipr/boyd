@@ -51,7 +51,7 @@ void BoydRunner::run()
       camera.update();
     
       // Publish frame and blobs over daylite
-      boyd::frame_data fd = camera.createFrameData();
+      boyd::frame_data fd = camera.createFrameData(maxNumBlobs);
       framePub->publish(bson(fd.bind()));
     }
     
@@ -84,6 +84,7 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
 }
 
 Camera BoydRunner::camera;
+int BoydRunner::maxNumBlobs = 10;
 
 // Constant strings for each relevant daylite topic
 const std::string BoydRunner::frameTopic = "camera/frame_data";
