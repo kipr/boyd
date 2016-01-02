@@ -80,6 +80,12 @@ void Camera::setHeight(const int height)
   m_height = height;
 }
 
+void Camera::setConfig(const Config &config)
+{
+  m_config = config;
+  updateChannelsFromConfig();
+}
+
 int Camera::width() const
 {
   return m_width;
@@ -90,10 +96,14 @@ int Camera::height() const
   return m_height;
 }
 
-void Camera::setConfig(const Config &config)
+int Camera::numChannels() const
 {
-  m_config = config;
-  updateChannelsFromConfig();
+  return m_channels.size();
+}
+
+const uchar *Camera::rawImageRow(const int rowNum) const
+{
+  return m_image.ptr(rowNum);
 }
 
 const ObjectVector *Camera::objects(int channelNum) const
@@ -102,42 +112,6 @@ const ObjectVector *Camera::objects(int channelNum) const
     return 0;
   
   return m_channels[channelNum]->objects();
-}
-
-boyd::frame_data Camera::createFrameData(const int maxNumBlobs) const
-{
-  using namespace boyd;
-  
-  frame_data ret;
-  ret.format = "bgr8";
-  ret.width  = this->width();
-  ret.height = this->height();
-  
-  for(int chanNum = 0; chanNum < m_channels.size(); ++chanNum) {
-    const ObjectVector *const objs = this->objects(chanNum);
-    std::cout << "Channel " << chanNum << ": " << objs->size() << " blobs" << std::endl;
-    channel_data cd;
-    const unsigned long numBlobs = std::min<unsigned long>(objs->size(), maxNumBlobs);
-    for(int i = 0; i < numBlobs; ++i) {
-      const Object &obj = objs->at(i);
-      blob b;
-      b.centroidX = obj.centroidX;
-      b.centroidY = obj.centroidY;
-      b.bBoxX = obj.bBoxX;
-      b.bBoxY = obj.bBoxY;
-      b.bBoxWidth = obj.bBoxWidth;
-      b.bBoxHeight = obj.bBoxHeight;
-      b.confidence = obj.confidence;
-      cd.blobs.push_back(b);
-    }
-    ret.ch_data.push_back(cd);
-  }
-  
-  ret.data.resize(ret.width * ret.height * 3);
-  for(uint32_t r = 0; r < ret.height; ++r)
-    memcpy(ret.data.data() + r * ret.width * 3, m_image.ptr(r), ret.width * 3);
-  
-  return ret;
 }
 
 void Camera::updateChannelsFromConfig()

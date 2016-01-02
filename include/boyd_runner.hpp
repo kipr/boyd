@@ -3,6 +3,7 @@
 
 #include <daylite/bson.hpp>
 #include "camera.hpp"
+#include "frame_data.hpp"
 
 class BoydRunner
 {
@@ -12,6 +13,7 @@ public:
 private:
   BoydRunner();
   static void receivedSettings(const daylite::bson &msg, void *);
+  static boyd::frame_data createFrameData();
   
   static Camera camera;
   

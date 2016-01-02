@@ -25,14 +25,13 @@ public:
   
   void setWidth(const int width);
   void setHeight(const int height);
+  void setConfig(const Config &config);
   
   int width() const;
   int height() const;
-  
-  void setConfig(const Config &config);
-  
+  int numChannels() const;
+  const uchar *rawImageRow(const int rowNum) const;
   const ObjectVector *objects(const int channelNum) const;
-  boyd::frame_data createFrameData(const int maxNumBlobs) const;
   
 private:
   void updateChannelsFromConfig();

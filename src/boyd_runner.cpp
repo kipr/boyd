@@ -1,5 +1,8 @@
 #include "boyd_runner.hpp"
+#include "object.hpp"
 #include "config.hpp"
+#include "channel_data.hpp"
+#include "blob.hpp"
 #include "settings.hpp"
 
 #include <daylite/node.hpp>
@@ -51,7 +54,7 @@ void BoydRunner::run()
       camera.update();
     
       // Publish frame and blobs over daylite
-      boyd::frame_data fd = camera.createFrameData(maxNumBlobs);
+      boyd::frame_data fd = BoydRunner::createFrameData();
       framePub->publish(bson(fd.bind()));
     }
     
@@ -81,6 +84,41 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     else
       camera.setConfig(*newConfig);
   }
+}
+
+boyd::frame_data BoydRunner::createFrameData()
+{
+  using namespace boyd;
+  
+  frame_data ret;
+  ret.format = "bgr8";
+  ret.width  = camera.width();
+  ret.height = camera.height();
+  
+  for(int chanNum = 0; chanNum < camera.numChannels(); ++chanNum) {
+    channel_data cd;
+    const ObjectVector *const objs = camera.objects(chanNum);
+    const unsigned long numBlobs = std::min<unsigned long>(objs->size(), maxNumBlobs);
+    for(int i = 0; i < numBlobs; ++i) {
+      const Object &obj = objs->at(i);
+      blob b;
+      b.centroidX = obj.centroidX;
+      b.centroidY = obj.centroidY;
+      b.bBoxX = obj.bBoxX;
+      b.bBoxY = obj.bBoxY;
+      b.bBoxWidth = obj.bBoxWidth;
+      b.bBoxHeight = obj.bBoxHeight;
+      b.confidence = obj.confidence;
+      cd.blobs.push_back(b);
+    }
+    ret.ch_data.push_back(cd);
+  }
+  
+  ret.data.resize(ret.width * ret.height * 3);
+  for(uint32_t r = 0; r < ret.height; ++r)
+    memcpy(ret.data.data() + r * ret.width * 3, camera.rawImageRow(r), ret.width * 3);
+  
+  return ret;
 }
 
 Camera BoydRunner::camera;
