@@ -1,7 +1,7 @@
 #ifndef _BOYD_RUNNER_HPP_
 #define _BOYD_RUNNER_HPP_
 
-#include <bson.h>
+#include <daylite/bson.hpp>
 #include "camera.hpp"
 
 class BoydRunner
@@ -11,7 +11,7 @@ public:
   
 private:
   BoydRunner();
-  static void receivedSettings(const bson_t *msg, void *);
+  static void receivedSettings(const daylite::bson &msg, void *);
   
   static Camera camera;
   

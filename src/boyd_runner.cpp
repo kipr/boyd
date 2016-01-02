@@ -52,7 +52,7 @@ void BoydRunner::run()
     
       // Publish frame and blobs over daylite
       boyd::frame_data fd = camera.createFrameData();
-      framePub->publish(fd.bind());
+      framePub->publish(bson(fd.bind()));
     }
     
     // TODO: This is an arbitrary sleep interval for testing purposes
@@ -61,7 +61,7 @@ void BoydRunner::run()
 }
 
 // Called when we receive setting changes
-void BoydRunner::receivedSettings(const bson_t *msg, void *)
+void BoydRunner::receivedSettings(const bson &msg, void *)
 {
   using namespace boyd;
   
