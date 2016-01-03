@@ -18,6 +18,7 @@ int frameNum = 0;
 time_point<steady_clock> prevTime;
 
 void receivedFrame(const bson &msg, void *arg);
+void onMouseEvent(int event, int x, int y, int f, void *data);
 
 int main()
 {
@@ -50,7 +51,6 @@ void receivedFrame(const bson &msg, void *arg)
   //std::cout << "Received frame " << ++frameNum << std::endl;
   
   frame_data fd = frame_data::unbind(msg);
-  //std::cout << "(" << unsigned(fd.data[0]) << ", " << unsigned(fd.data[1]) << ", " << unsigned(fd.data[2]) << ")" << std::endl;
   
   Mat frame = Mat::zeros(fd.height, fd.width, 16);
   int offset = 0;
@@ -61,16 +61,14 @@ void receivedFrame(const bson &msg, void *arg)
     }
   
   if(fd.ch_data[0].blobs.size() > 0) {
-    auto bigBlob = fd.ch_data[0].blobs[0];
+    const auto bigBlob = fd.ch_data[0].blobs[0];
     std::cout << "Biggest blob confidence: " << bigBlob.confidence << std::endl;
-    Rect blobRect(bigBlob.bBoxX, bigBlob.bBoxY, bigBlob.bBoxX + bigBlob.bBoxWidth, bigBlob.bBoxY + bigBlob.bBoxHeight);
-    rectangle(frame, blobRect, Scalar(255, 0, 0)); 
+    const Rect blobRect(bigBlob.bBoxX, bigBlob.bBoxY, bigBlob.bBoxWidth, bigBlob.bBoxHeight);
+    rectangle(frame, blobRect, Scalar(255, 0, 0));
   }
   imshow("received", frame);
+  cv::setMouseCallback("received", onMouseEvent, &frame);
   waitKey(10);
-  
-  //std::cout << "Num channels: " << fd.ch_data.size() << std::endl;
-  //std::cout << fd.ch_data[0].blobs.size() << " blobs" << std::endl;
   
   auto currTime = steady_clock::now();
   if(currTime - prevTime >= milliseconds(1000)) {
@@ -79,4 +77,23 @@ void receivedFrame(const bson &msg, void *arg)
     frameNum = 0;
     prevTime = currTime;
   }
+}
+
+void onMouseEvent(int event, int x, int y, int f, void *data) {
+  using namespace cv;
+  
+  if(event != EVENT_LBUTTONDOWN)
+    return;
+  
+  Mat inputImage = *((Mat *)data);
+  
+  const Vec3b rgb = inputImage.at<Vec3b>(y, x);
+  
+  Mat HSV;
+  Mat RGB = inputImage(Rect(x, y, 1, 1));
+  cvtColor(RGB, HSV, CV_BGR2HSV);
+  
+  const Vec3b hsv = HSV.at<Vec3b>(0, 0);
+  
+  std::cout << "(H, S, V) = (" << hsv.val[0] << ", " << hsv.val[1] << ", " << hsv.val[2] << ")" << std::endl;
 }
