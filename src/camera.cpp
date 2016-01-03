@@ -9,9 +9,6 @@
 Camera::Camera()
   : m_capture(new cv::VideoCapture)
 {
-  // Default to 160x120 images
-  setWidth(160);
-  setHeight(120);
 }
 
 Camera::~Camera()
