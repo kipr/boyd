@@ -39,8 +39,8 @@ void BoydRunner::run()
     std::cerr << "Failed to open camera!" << std::endl;
     return;
   }
-  camera.setWidth(240);
-  camera.setHeight(180);
+  camera.setWidth(320);
+  camera.setHeight(240);
   
   // Run forever
   for(;;) {
