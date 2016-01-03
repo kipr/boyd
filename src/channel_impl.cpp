@@ -75,8 +75,6 @@ ObjectVector HsvChannelImpl::findObjects(const Config &config)
   cv::Vec3b top(config.intValue("th"), config.intValue("ts"), config.intValue("tv"));
   cv::Vec3b bottom(config.intValue("bh"), config.intValue("bs"), config.intValue("bv"));
   
-  // std::cout << "top: <" << top[0] << ", " << top[1] << ", " << top[2] << ">" << std::endl;
-  
   cv::Mat fixed = m_image;
   if(bottom[0] > top[0]) {
     // Modulo 180
@@ -111,8 +109,9 @@ ObjectVector HsvChannelImpl::findObjects(const Config &config)
     const cv::Rect rect = cv::boundingRect(c[i]);
     if(rect.width < 4 && rect.height < 4) continue;
     
+    const int confidence = m[i].m00 * 100 / rect.area();
     ret.push_back(Object(m[i].m10 / m[i].m00, m[i].m01 / m[i].m00,
-      rect.x, rect.y, rect.width, rect.height, 1.0));
+      rect.x, rect.y, rect.width, rect.height, confidence));
   }
   
   return ret;

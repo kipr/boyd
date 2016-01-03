@@ -6,7 +6,7 @@ Object::Object(const unsigned centroidX,
   const unsigned bBoxY,
   const unsigned bBoxWidth,
   const unsigned bBoxHeight,
-  const double confidence)
+  const unsigned confidence)
   : centroidX(centroidX),
   centroidY(centroidY),
   bBoxX(bBoxX),
