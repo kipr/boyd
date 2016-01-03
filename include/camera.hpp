@@ -27,8 +27,8 @@ public:
   void setHeight(const int height);
   void setConfig(const Config &config);
   
-  int width() const;
-  int height() const;
+  int imageWidth() const;
+  int imageHeight() const;
   int numChannels() const;
   const uchar *rawImageRow(const int rowNum) const;
   const ObjectVector *objects(const int channelNum) const;
@@ -41,9 +41,6 @@ private:
   
   Config m_config;
   ChannelPtrVector m_channels;
-  
-  int m_width;
-  int m_height;
 };
 
 #endif

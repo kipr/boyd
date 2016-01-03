@@ -71,13 +71,11 @@ bool Camera::update()
 void Camera::setWidth(const int width)
 {
   m_capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
-  m_width = width;
 }
 
 void Camera::setHeight(const int height)
 {
   m_capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
-  m_height = height;
 }
 
 void Camera::setConfig(const Config &config)
@@ -86,14 +84,14 @@ void Camera::setConfig(const Config &config)
   updateChannelsFromConfig();
 }
 
-int Camera::width() const
+int Camera::imageWidth() const
 {
-  return m_width;
+  return m_image.cols;
 }
 
-int Camera::height() const
+int Camera::imageHeight() const
 {
-  return m_height;
+  return m_image.rows;
 }
 
 int Camera::numChannels() const

@@ -94,8 +94,8 @@ boyd::frame_data BoydRunner::createFrameData()
   
   frame_data ret;
   ret.format = "bgr8";
-  ret.width  = camera.width();
-  ret.height = camera.height();
+  ret.width  = camera.imageWidth();
+  ret.height = camera.imageHeight();
   
   for(int chanNum = 0; chanNum < camera.numChannels(); ++chanNum) {
     channel_data cd;
