@@ -32,6 +32,7 @@ void BoydRunner::run()
   }
   
   auto framePub = node->advertise(BoydRunner::frameTopic);
+  framePub->set_firehose(true);
   auto settingsSub = node->subscribe(BoydRunner::settingsTopic, BoydRunner::receivedSettings);
   
   // Initial camera setup
