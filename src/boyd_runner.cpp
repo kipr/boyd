@@ -7,6 +7,7 @@
 
 #include <daylite/node.hpp>
 #include <daylite/spinner.hpp>
+#include <daylite/util.hpp>
 
 #include <iostream>
 #include <thread>
@@ -43,8 +44,7 @@ void BoydRunner::run()
   camera.setWidth(320);
   camera.setHeight(240);
   
-  // Run forever
-  for(;;) {
+  while(!daylite::should_exit()) {
     daylite::spinner::spin_once();
     
     // Only process/send frames if someone cares about them
