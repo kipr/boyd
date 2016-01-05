@@ -26,3 +26,5 @@ add_executable(test test/test.cpp)
 
 target_link_libraries(boyd ${DAYLITE_LIBRARIES} ${OPENCV_LIBRARIES})
 target_link_libraries(test ${DAYLITE_LIBRARIES} ${OPENCV_LIBRARIES})
+
+install(TARGETS boyd RUNTIME DESTINATION bin)
