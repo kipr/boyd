@@ -1,9 +1,9 @@
 #include "boyd_runner.hpp"
 #include "object.hpp"
 #include "config.hpp"
-#include "channel_data.hpp"
-#include "blob.hpp"
-#include "settings.hpp"
+#include <battlecreek/channel_data.hpp>
+#include <battlecreek/blob.hpp>
+#include <battlecreek/settings.hpp>
 
 #include <daylite/node.hpp>
 #include <daylite/spinner.hpp>
@@ -13,6 +13,7 @@
 #include <thread>
 
 using namespace daylite;
+using namespace std::chrono;
 
 void BoydRunner::run()
 {
@@ -44,6 +45,9 @@ void BoydRunner::run()
   camera.setWidth(320);
   camera.setHeight(240);
   
+  int frameNum = 0;
+  auto startTime = std::chrono::steady_clock::now();
+  
   while(!daylite::should_exit()) {
     daylite::spinner::spin_once();
     
@@ -57,6 +61,15 @@ void BoydRunner::run()
       // Publish frame and blobs over daylite
       boyd::frame_data fd = BoydRunner::createFrameData();
       framePub->publish(bson(fd.bind()));
+      
+      // Frame timing
+      ++frameNum;
+      auto duration = steady_clock::now() - startTime;
+      if(duration >= seconds(1)) {
+        std::cout << "Published " << frameNum << " frames in " << duration_cast<milliseconds>(duration).count() << std::endl;
+        frameNum = 0;
+        startTime = steady_clock::now();
+      }
     }
     
     // TODO: This is an arbitrary sleep interval for testing purposes

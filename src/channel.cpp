@@ -1,5 +1,4 @@
 #include "channel.hpp"
-#include "frame_data.hpp"
 #include <iostream>
 
 Channel::Channel(const Config &config)

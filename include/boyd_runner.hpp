@@ -2,8 +2,8 @@
 #define _BOYD_RUNNER_HPP_
 
 #include <daylite/bson.hpp>
+#include <battlecreek/frame_data.hpp>
 #include "camera.hpp"
-#include "frame_data.hpp"
 
 class BoydRunner
 {

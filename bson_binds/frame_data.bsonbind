@@ -1,9 +1,0 @@
-# Raw pixels and processed blobs for a single frame
-
-%package boyd
-
-string format!
-uint32 width!
-uint32 height!
-uint8[] data!
-channel_data[] ch_data!

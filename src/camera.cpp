@@ -4,7 +4,7 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 
-#include "channel_data.hpp"
+#include <battlecreek/channel_data.hpp>
 
 Camera::Camera()
   : m_capture(new cv::VideoCapture)

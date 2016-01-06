@@ -4,12 +4,12 @@
 #include <daylite/node.hpp>
 #include <daylite/spinner.hpp>
 #include <daylite/bson.hpp>
+#include <daylite/util.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-
-#include "frame_data.hpp"
-#include "settings.hpp"
+#include <battlecreek/frame_data.hpp>
+#include <battlecreek/settings.hpp>
 
 using namespace daylite;
 using namespace std::chrono;
@@ -34,7 +34,7 @@ int main()
   auto settingsPub = node->advertise("camera/settings");
   
   prevTime = steady_clock::now();
-  for(;;) {
+  while(!daylite::should_exit()) {
     daylite::spinner::spin_once();
     std::this_thread::sleep_for(milliseconds(50));
   }
