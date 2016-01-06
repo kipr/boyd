@@ -17,7 +17,7 @@ using namespace daylite;
 using namespace std::chrono;
 
 void BoydRunner::run()
-{
+{ 
   // Load default config file
   Config *defaultConfig = Config::load(ConfigPath::defaultConfigPath());
   if(!defaultConfig) {
@@ -34,9 +34,11 @@ void BoydRunner::run()
     return;
   }
   
-  auto framePub = node->advertise(BoydRunner::frameTopic);
-  framePub->set_firehose(true);
   auto settingsSub = node->subscribe(BoydRunner::setSettingsTopic, BoydRunner::receivedSettings);
+  auto framePub = node->advertise(BoydRunner::frameTopic);
+  auto settingsPub = node->advertise(BoydRunner::settingsTopic);
+  framePub->set_firehose(true);
+  settingsPub->set_firehose(true);
   
   // Initial camera setup
   if(!camera.open(0)) {
@@ -71,6 +73,21 @@ void BoydRunner::run()
         frameNum = 0;
         startTime = steady_clock::now();
       }
+    }
+    
+    // Only send settings if someone cares about them
+    if(settingsPub->subscriber_count() > 0) {
+      boyd::settings s;
+      s.width = camera.imageWidth();
+      s.height = camera.imageHeight();
+      s.maxNumBlobs = BoydRunner::maxNumBlobs;
+      s.config_base_path = ConfigPath::baseDir();
+      // TODO: Need config name
+      //s.config_name = ??
+      // TODO: Find system camera configs
+      //s.camera_configs = ??
+      
+      settingsPub->publish(bson(s.bind()));
     }
     
     // TODO: This is an arbitrary sleep interval for testing purposes
@@ -160,4 +177,5 @@ int BoydRunner::maxNumBlobs = 10;
 
 // Constant strings for each relevant daylite topic
 const std::string BoydRunner::frameTopic = "camera/frame_data";
+const std::string BoydRunner::settingsTopic = "camera/settings";
 const std::string BoydRunner::setSettingsTopic = "camera/set_settings";

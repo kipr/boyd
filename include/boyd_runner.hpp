@@ -20,6 +20,7 @@ private:
   static int maxNumBlobs;
   
   static const std::string frameTopic;
+  static const std::string settingsTopic;
   static const std::string setSettingsTopic;
 };
 
