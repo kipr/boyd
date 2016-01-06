@@ -36,7 +36,7 @@ void BoydRunner::run()
   
   auto framePub = node->advertise(BoydRunner::frameTopic);
   framePub->set_firehose(true);
-  auto settingsSub = node->subscribe(BoydRunner::settingsTopic, BoydRunner::receivedSettings);
+  auto settingsSub = node->subscribe(BoydRunner::setSettingsTopic, BoydRunner::receivedSettings);
   
   // Initial camera setup
   if(!camera.open(0)) {
@@ -160,4 +160,4 @@ int BoydRunner::maxNumBlobs = 10;
 
 // Constant strings for each relevant daylite topic
 const std::string BoydRunner::frameTopic = "camera/frame_data";
-const std::string BoydRunner::settingsTopic = "camera/settings";
+const std::string BoydRunner::setSettingsTopic = "camera/set_settings";

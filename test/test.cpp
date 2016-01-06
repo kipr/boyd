@@ -31,7 +31,7 @@ int main()
   }
   
   auto frameSub = node->subscribe("camera/frame_data", receivedFrame);
-  auto settingsPub = node->advertise("camera/settings");
+  auto settingsPub = node->advertise("camera/set_settings");
   
   prevTime = steady_clock::now();
   while(!daylite::should_exit()) {
