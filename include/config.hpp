@@ -49,15 +49,23 @@ class ConfigPath
 {
 public:
   static std::string extension();
+  static std::string sysBaseDir();
+  static std::string baseDir();
+  static void setBaseDir(const std::string &path);
   
-  static void setBasePath(const std::string &path);
-  static std::string pathTo(const std::string &name = std::string());
+  static std::string pathToConfig(const std::string &name);
+  static std::string pathToSysConfig(const std::string &name);
+  
   static std::string defaultPath();
   static std::string defaultConfigPath();
-  static void setDefaultConfigPath(const std::string &name);
+  static void setDefaultConfig(const std::string &name);
+  
+  // Ensures given config exists in system base path
+  static void ensureConfigExists(const std::string &name);
   
 private:
-  static std::string m_basePath;
+  static std::string m_baseDir;
+  static const std::string m_sysBaseDir;
 };
 
 #endif

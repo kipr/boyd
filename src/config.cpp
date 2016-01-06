@@ -180,30 +180,48 @@ std::string Config::group() const
 
 // ConfigPath
 
-std::string ConfigPath::m_basePath = "/etc/boyd/channels/";
+const std::string ConfigPath::m_sysBaseDir = "/etc/boyd/channels/";
+std::string ConfigPath::m_baseDir = ConfigPath::m_sysBaseDir;
 
 std::string ConfigPath::extension()
 {
   return "conf";
 }
 
-void ConfigPath::setBasePath(const std::string &path)
+std::string ConfigPath::sysBaseDir()
 {
-  m_basePath = path;
-  if(!m_basePath.empty() && m_basePath.back() != '/')
-    m_basePath += "/";
+  return m_sysBaseDir;
 }
 
-std::string ConfigPath::pathTo(const std::string &name)
+std::string ConfigPath::baseDir()
+{
+  return m_baseDir;
+}
+
+void ConfigPath::setBaseDir(const std::string &path)
+{
+  m_baseDir = path;
+  if(!m_baseDir.empty() && m_baseDir.back() != '/')
+    m_baseDir += "/";
+}
+
+std::string ConfigPath::pathToConfig(const std::string &name)
 {
   if(name.empty())
-    return m_basePath;
-  return m_basePath + name + "." + extension();
+    return std::string();
+  return m_baseDir + name + "." + extension();
+}
+
+std::string ConfigPath::pathToSysConfig(const std::string &name)
+{
+  if(name.empty())
+    return std::string();
+  return m_sysBaseDir + name + "." + extension();
 }
 
 std::string ConfigPath::defaultPath()
 {
-  return m_basePath + "default";
+  return m_baseDir + "default";
 }
 
 std::string ConfigPath::defaultConfigPath()
@@ -222,7 +240,7 @@ std::string ConfigPath::defaultConfigPath()
   return ret;
 }
 
-void ConfigPath::setDefaultConfigPath(const std::string &name)
+void ConfigPath::setDefaultConfig(const std::string &name)
 {
   std::ofstream file;
   file.open(defaultPath().c_str());
@@ -231,7 +249,16 @@ void ConfigPath::setDefaultConfigPath(const std::string &name)
     return;
   }
   
-  const std::string path = ConfigPath::pathTo(name);
+  const std::string path = ConfigPath::pathToConfig(name);
   file.write(path.c_str(), path.size());
   file.close();
+}
+
+void ConfigPath::ensureConfigExists(const std::string &name)
+{
+  const std::string filePath = m_sysBaseDir + name;
+  if(std::ifstream(filePath))
+    return;
+  
+  std::ofstream newFile(filePath);
 }

@@ -91,10 +91,10 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
   if(s.maxNumBlobs.some())
     BoydRunner::maxNumBlobs = s.maxNumBlobs.unwrap();
   if(s.config_base_path.some())
-    ConfigPath::setBasePath(s.config_base_path.unwrap());
+    ConfigPath::setBaseDir(s.config_base_path.unwrap());
   if(s.config_name.some()) {
     // Try to load the new config
-    const Config *const newConfig = Config::load(ConfigPath::pathTo(s.config_name.unwrap()));
+    const Config *const newConfig = Config::load(ConfigPath::pathToConfig(s.config_name.unwrap()));
     if(!newConfig)
       std::cerr << "Failed to load the new config file" << std::endl;
     else
