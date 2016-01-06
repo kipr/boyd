@@ -5,6 +5,7 @@
 #include <battlecreek/channel_data.hpp>
 #include <battlecreek/blob.hpp>
 #include <battlecreek/settings.hpp>
+#include <battlecreek/camera_config.hpp>
 
 #include <daylite/node.hpp>
 #include <daylite/spinner.hpp>
@@ -12,6 +13,7 @@
 
 #include <iostream>
 #include <thread>
+#include <dirent.h>
 
 using namespace daylite;
 using namespace std::chrono;
@@ -76,6 +78,7 @@ void BoydRunner::run()
     }
     
     // Only send settings if someone cares about them
+    // TODO: Limit how often this is published?
     if(settingsPub->subscriber_count() > 0) {
       boyd::settings s;
       s.width = camera.imageWidth();
@@ -84,8 +87,40 @@ void BoydRunner::run()
       s.config_base_path = ConfigPath::baseDir();
       // TODO: Need config name
       //s.config_name = ??
-      // TODO: Find system camera configs
-      //s.camera_configs = ??
+      
+      // TODO: Make this cross-platform
+      std::vector<std::string> confNames;
+      DIR *const d = opendir(ConfigPath::sysBaseDir().c_str());
+      struct dirent *dir;
+      if(d) {
+        while((dir = readdir(d)) != NULL) {
+          std::string str(dir->d_name);
+          if(str.size() > 5 && str.compare(str.size() - 5, 5, ".conf") == 0)
+            confNames.push_back(str.substr(0, str.size() - 5));
+        }
+        closedir(d);
+      }
+      std::vector<boyd::camera_config> camConfigs;
+      for(const std::string &confName : confNames) {
+        CameraConfig cameraConfig(ConfigPath::pathToSysConfig(confName));
+        boyd::camera_config camConfig;
+        camConfig.config_name = confName;
+        const int numChannels = cameraConfig.numChannels();
+        for(int i = 0; i < numChannels; ++i) {
+          const CameraConfig::HsvBounds hsvs = cameraConfig.channel(i);
+          boyd::channel_config chConfig;
+          chConfig.channel_name = cameraConfig.channelName(i);
+          chConfig.bh = hsvs.bh;
+          chConfig.bs = hsvs.bs;
+          chConfig.bv = hsvs.bv;
+          chConfig.th = hsvs.th;
+          chConfig.ts = hsvs.ts;
+          chConfig.tv = hsvs.tv;
+          camConfig.channels.push_back(chConfig);
+        }
+        camConfigs.push_back(camConfig);
+      }
+      s.camera_configs = camConfigs;
       
       settingsPub->publish(bson(s.bind()));
     }
@@ -128,8 +163,10 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
       CameraConfig camConfig;
       
       // Iterate through each channel
-      for(const channel_config &cc : chConfigs)
-        camConfig.addChannel(cc.channel_name, cc.bh, cc.bs, cc.bv, cc.th, cc.ts, cc.tv);
+      for(const channel_config &cc : chConfigs) {
+        const CameraConfig::HsvBounds hsvs = {cc.bh, cc.bs, cc.bv, cc.th, cc.ts, cc.tv};
+        camConfig.addChannel(cc.channel_name, hsvs);
+      }
       
       // Save camera config
       camConfig.save(ConfigPath::pathToSysConfig(conf.config_name));
