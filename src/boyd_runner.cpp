@@ -100,6 +100,33 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     else
       camera.setConfig(*newConfig);
   }
+  
+  // TODO: Move this logic elsewhere
+  if(s.camera_configs.some()) {
+    const std::vector<camera_config> &configs = s.camera_configs.unwrap();
+    // Iterate through each config
+    for(const camera_config &conf : configs) {
+      // Create config file
+      const std::string &confName = conf.config_name;
+      Config confFile;
+      const std::vector<channel_config> &chConfigs = conf.channels;
+      confFile.beginGroup(CAMERA_GROUP);
+      confFile.setValue(CAMERA_CHANNEL_NUM_KEY, (int)chConfigs.size());
+      // Iterate through each channel
+      for(const channel_config &chConfig : chConfigs) {
+        confFile.beginGroup(chConfig.channel_name);
+        confFile.setValue("th", chConfig.th);
+        confFile.setValue("ts", chConfig.ts);
+        confFile.setValue("tv", chConfig.tv);
+        confFile.setValue("bh", chConfig.bh);
+        confFile.setValue("bs", chConfig.bs);
+        confFile.setValue("bv", chConfig.bv);
+        confFile.endGroup();
+      }
+      confFile.endGroup();
+      confFile.save(ConfigPath::pathToSysConfig(confName));
+    }
+  }
 }
 
 boyd::frame_data BoydRunner::createFrameData()
