@@ -60,8 +60,6 @@ public:
   static std::string defaultConfigPath();
   static void setDefaultConfig(const std::string &name);
   
-  static void ensureSysConfigExists(const std::string &name);
-  
 private:
   static std::string m_baseDir;
   static const std::string m_sysBaseDir;
