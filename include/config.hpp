@@ -57,7 +57,7 @@ public:
   static void setDefaultConfigPath(const std::string &name);
   
 private:
-  static std::string m_path;
+  static std::string m_basePath;
 };
 
 #endif

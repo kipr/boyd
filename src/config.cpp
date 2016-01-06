@@ -180,7 +180,7 @@ std::string Config::group() const
 
 // ConfigPath
 
-std::string ConfigPath::m_path = "/etc/boyd/channels/";
+std::string ConfigPath::m_basePath = "/etc/boyd/channels/";
 
 std::string ConfigPath::extension()
 {
@@ -189,21 +189,21 @@ std::string ConfigPath::extension()
 
 void ConfigPath::setBasePath(const std::string &path)
 {
-  m_path = path;
-  if(!m_path.empty() && m_path.back() != '/')
-    m_path += "/";
+  m_basePath = path;
+  if(!m_basePath.empty() && m_basePath.back() != '/')
+    m_basePath += "/";
 }
 
 std::string ConfigPath::pathTo(const std::string &name)
 {
   if(name.empty())
-    return m_path;
-  return m_path + name + "." + extension();
+    return m_basePath;
+  return m_basePath + name + "." + extension();
 }
 
 std::string ConfigPath::defaultPath()
 {
-  return m_path + "default";
+  return m_basePath + "default";
 }
 
 std::string ConfigPath::defaultConfigPath()
