@@ -13,7 +13,7 @@ public:
 private:
   BoydRunner();
   static void receivedSettings(const daylite::bson &msg, void *);
-  static boyd::frame_data createFrameData();
+  static void createFrameData(boyd::frame_data &fd);
   
   static Camera camera;
   

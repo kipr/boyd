@@ -53,6 +53,7 @@ void BoydRunner::run()
   int frameNum = 0;
   auto startTime = std::chrono::steady_clock::now();
   
+  boyd::frame_data fd;
   while(!daylite::should_exit()) {
     daylite::spinner::spin_once();
     
@@ -64,7 +65,7 @@ void BoydRunner::run()
       camera.update();
     
       // Publish frame and blobs over daylite
-      boyd::frame_data fd = BoydRunner::createFrameData();
+      BoydRunner::createFrameData(fd);
       framePub->publish(bson(fd.bind()));
       
       // Frame timing
@@ -174,15 +175,17 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
   }
 }
 
-boyd::frame_data BoydRunner::createFrameData()
+void BoydRunner::createFrameData(boyd::frame_data &fd)
 {
   using namespace boyd;
   
-  frame_data ret;
-  ret.format = "bgr8";
-  ret.width  = camera.imageWidth();
-  ret.height = camera.imageHeight();
+  const int prevDataSize = fd.width * fd.height * 3;
   
+  fd.format = "bgr8";
+  fd.width  = camera.imageWidth();
+  fd.height = camera.imageHeight();
+  
+  fd.ch_data.clear();
   for(int chanNum = 0; chanNum < camera.numChannels(); ++chanNum) {
     channel_data cd;
     const ObjectVector *const objs = camera.objects(chanNum);
@@ -199,14 +202,14 @@ boyd::frame_data BoydRunner::createFrameData()
       b.confidence = obj.confidence;
       cd.blobs.push_back(b);
     }
-    ret.ch_data.push_back(cd);
+    fd.ch_data.push_back(cd);
   }
   
-  ret.data.resize(ret.width * ret.height * 3);
-  for(uint32_t r = 0; r < ret.height; ++r)
-    memcpy(ret.data.data() + r * ret.width * 3, camera.rawImageRow(r), ret.width * 3);
-  
-  return ret;
+  const int reqDataSize = fd.width * fd.height * 3;
+  if(reqDataSize != prevDataSize)
+    fd.data.resize(reqDataSize);
+  for(uint32_t r = 0; r < fd.height; ++r)
+    memcpy(fd.data.data() + r * fd.width * 3, camera.rawImageRow(r), fd.width * 3);
 }
 
 Camera BoydRunner::camera;
