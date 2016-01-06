@@ -254,7 +254,7 @@ void ConfigPath::setDefaultConfig(const std::string &name)
   file.close();
 }
 
-void ConfigPath::ensureConfigExists(const std::string &name)
+void ConfigPath::ensureSysConfigExists(const std::string &name)
 {
   const std::string filePath = m_sysBaseDir + name;
   if(std::ifstream(filePath))
