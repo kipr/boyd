@@ -117,6 +117,7 @@ void Camera::updateChannelsFromConfig()
   m_channels.clear();
   
   // Populate channels based on current config
+  // TODO: Use CameraConfig to do this
   m_config.clearGroup();
   m_config.beginGroup(CAMERA_GROUP);
   const int numChannels = m_config.intValue(CAMERA_CHANNEL_NUM_KEY);
