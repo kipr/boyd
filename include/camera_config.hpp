@@ -21,7 +21,7 @@ public:
   
   void addChannel(const std::string &chName, HsvBounds hsvs);
   HsvBounds channel(const int channelNum);
-  const std::string channelName(const int channelNum);
+  const std::string channelName(const int channelNum) const;
   
   int numChannels() const;
   

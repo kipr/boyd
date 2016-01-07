@@ -56,7 +56,7 @@ CameraConfig::HsvBounds CameraConfig::channel(const int channelNum)
   return ret;
 }
 
-const std::string CameraConfig::channelName(const int channelNum)
+const std::string CameraConfig::channelName(const int channelNum) const
 {
   return CAMERA_CHANNEL_GROUP_PREFIX + std::to_string(channelNum);
 }
