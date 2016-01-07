@@ -52,6 +52,7 @@ bool Camera::update()
   if(!m_capture->read(m_image)) {
     m_image = cv::Mat();
     this->close();
+    std::cout << "Camera disconnected" << std::endl;
     return false;
   }
     
