@@ -16,6 +16,17 @@ Published Daylite Messages
   "data": uint8[],
   "ch_data": channel_data[]
 }
+
+# channel_data
+"msg": {
+  "blobs": blob[]
+}
+
+# blob
+"msg": {
+  "centroidX": uint16,
+  "centroidY": uint16,
+}
 ```
 
 `camera/settings`
