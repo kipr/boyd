@@ -42,13 +42,14 @@ void BoydRunner::run()
   framePub->set_firehose(true);
   settingsPub->set_firehose(true);
   
-  // Initial camera setup
-  if(!camera.open(0)) {
-    std::cerr << "Failed to open camera!" << std::endl;
-    return;
+  // Try to open camera at launch
+  if(camera.open(0)) {
+    camera.setWidth(640);
+    camera.setHeight(480);
+    std::cout << "Camera connected at launch" << std::endl;
   }
-  camera.setWidth(640);
-  camera.setHeight(480);
+  else
+    std::cout << "Failed to open camera at launch" << std::endl;
   
   int frameNum = 0;
   auto startTime = std::chrono::steady_clock::now();
@@ -61,20 +62,32 @@ void BoydRunner::run()
     if(framePub->subscriber_count() > 0) {
       std::cout << "Num subscribers: " << framePub->subscriber_count() << std::endl;
       
-      // Retreive a new frame
-      camera.update();
-    
-      // Publish frame and blobs over daylite
-      BoydRunner::createFrameData(fd);
-      framePub->publish(bson(fd.bind()));
+      // Try to open the camera, if not already open
+      if(!camera.isOpen()) {
+        if(camera.open(0)) {
+          camera.setWidth(640);
+          camera.setHeight(480);
+          std::cout << "Camera connected" << std::endl;
+        }
+        else
+          std::cout << "Failed to open camera" << std::endl;
+      }
       
-      // Frame timing
-      ++frameNum;
-      auto duration = steady_clock::now() - startTime;
-      if(duration >= seconds(1)) {
-        std::cout << "Published " << frameNum << " frames in " << duration_cast<milliseconds>(duration).count() << std::endl;
-        frameNum = 0;
-        startTime = steady_clock::now();
+      // Try to grab a new frame
+      // Only send frames if update succeeded
+      if(camera.update()) {
+        // Publish frame and blobs over daylite
+        BoydRunner::createFrameData(fd);
+        framePub->publish(bson(fd.bind()));
+      
+        // Frame timing
+        ++frameNum;
+        auto duration = steady_clock::now() - startTime;
+        if(duration >= seconds(1)) {
+          std::cout << "Published " << frameNum << " frames in " << duration_cast<milliseconds>(duration).count() << std::endl;
+          frameNum = 0;
+          startTime = steady_clock::now();
+        }
       }
     }
     

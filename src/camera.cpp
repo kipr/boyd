@@ -45,12 +45,16 @@ bool Camera::close()
 
 bool Camera::update()
 {
-  // Get a new frame
+  if(!this->isOpen())
+    return false;
+  
+  // Try to get a new frame
   if(!m_capture->read(m_image)) {
     m_image = cv::Mat();
+    this->close();
     return false;
   }
-  
+    
   // No need to update channels if there are none
   if(!m_channels.empty()) {
     // Dirty all channel impls
