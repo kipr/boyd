@@ -148,7 +148,9 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     ConfigPath::setBaseDir(s.config_base_path.unwrap());
   if(s.config_name.some()) {
     // Try to load the new config
-    const Config *const newConfig = Config::load(ConfigPath::pathToConfig(s.config_name.unwrap()));
+    const std::string &path = ConfigPath::pathToConfig(s.config_name.unwrap());
+    std::cout << "Loading new config file: " << path << std::endl;
+    const Config *const newConfig = Config::load(path);
     if(!newConfig)
       std::cerr << "Failed to load the new config file" << std::endl;
     else

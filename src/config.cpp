@@ -228,7 +228,6 @@ std::string ConfigPath::defaultConfigPath()
 {
   std::ifstream file;
   file.open(defaultPath().c_str());
-  std::cout << "Attempting to open " << defaultPath().c_str() << std::endl;
   if(!file.is_open()) {
     std::cerr << "Failed to open default file" << std::endl;
     return std::string();
