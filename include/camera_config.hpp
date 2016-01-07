@@ -26,7 +26,7 @@ public:
   int numChannels() const;
   
 private:
-  Config m_config;
+  Config *m_config;
 };
 
 #endif
