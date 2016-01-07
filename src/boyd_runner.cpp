@@ -144,11 +144,18 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     camera.setHeight(s.height.unwrap());
   if(s.maxNumBlobs.some())
     BoydRunner::maxNumBlobs = s.maxNumBlobs.unwrap();
-  if(s.config_base_path.some())
-    ConfigPath::setBaseDir(s.config_base_path.unwrap());
+  if(s.config_base_path.some()) {
+    const std::string &basePath = s.config_base_path.unwrap();
+    if(basePath.empty())
+      ConfigPath::setBaseDir(ConfigPath::sysBaseDir());
+    else
+      ConfigPath::setBaseDir(basePath);
+  }
   if(s.config_name.some()) {
+    const std::string &name = s.config_name.unwrap();
+    const std::string &path = name.empty() ? ConfigPath::defaultConfigPath() : ConfigPath::pathToConfig(name);
+    
     // Try to load the new config
-    const std::string &path = ConfigPath::pathToConfig(s.config_name.unwrap());
     std::cout << "Loading new config file: " << path << std::endl;
     const Config *const newConfig = Config::load(path);
     if(!newConfig)
