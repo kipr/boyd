@@ -95,5 +95,5 @@ void onMouseEvent(int event, int x, int y, int f, void *data) {
   
   const Vec3b hsv = HSV.at<Vec3b>(0, 0);
   
-  std::cout << "(H, S, V) = (" << hsv.val[0] << ", " << hsv.val[1] << ", " << hsv.val[2] << ")" << std::endl;
+  std::cout << "(H, S, V) = (" << unsigned(hsv.val[0]) << ", " << unsigned(hsv.val[1]) << ", " << unsigned(hsv.val[2]) << ")" << std::endl;
 }
