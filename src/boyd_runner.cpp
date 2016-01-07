@@ -47,8 +47,8 @@ void BoydRunner::run()
     std::cerr << "Failed to open camera!" << std::endl;
     return;
   }
-  camera.setWidth(320);
-  camera.setHeight(240);
+  camera.setWidth(640);
+  camera.setHeight(480);
   
   int frameNum = 0;
   auto startTime = std::chrono::steady_clock::now();
