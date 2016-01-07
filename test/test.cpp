@@ -5,9 +5,9 @@
 #include <daylite/spinner.hpp>
 #include <daylite/bson.hpp>
 #include <daylite/util.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <battlecreek/frame_data.hpp>
 #include <battlecreek/settings.hpp>
 

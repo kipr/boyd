@@ -1,7 +1,7 @@
 #ifndef _CHANNEL_IMPL_HPP_
 #define _CHANNEL_IMPL_HPP_
 
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 //#include <zbar.h>
 
 #include "object.hpp"

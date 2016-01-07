@@ -1,7 +1,7 @@
 #include "camera.hpp"
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 
 #include <battlecreek/channel_data.hpp>
@@ -67,12 +67,12 @@ bool Camera::update()
 
 void Camera::setWidth(const int width)
 {
-  m_capture->set(cv::CAP_PROP_FRAME_WIDTH, width);
+  m_capture->set(CV_CAP_PROP_FRAME_WIDTH, width);
 }
 
 void Camera::setHeight(const int height)
 {
-  m_capture->set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  m_capture->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 }
 
 void Camera::setConfig(const Config &config)

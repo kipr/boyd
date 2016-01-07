@@ -1,7 +1,7 @@
 #ifndef _CAMERA_HPP_
 #define _CAMERA_HPP_
 
-#include <opencv2/videoio.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <battlecreek/frame_data.hpp>
 #include "channel.hpp"
 #include "config.hpp"
