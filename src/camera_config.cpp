@@ -2,6 +2,7 @@
 #include "camera.hpp"
 
 CameraConfig::CameraConfig()
+  : m_config(new Config())
 {
   m_config->beginGroup(CAMERA_GROUP);
 }
