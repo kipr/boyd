@@ -1,6 +1,5 @@
 #include "boyd_runner.hpp"
 #include "object.hpp"
-#include "config.hpp"
 #include "camera_config.hpp"
 #include <battlecreek/channel_data.hpp>
 #include <battlecreek/blob.hpp>
@@ -21,12 +20,12 @@ using namespace std::chrono;
 void BoydRunner::run()
 { 
   // Load default config file
-  Config *defaultConfig = Config::load(ConfigPath::defaultConfigPath());
-  if(!defaultConfig) {
+  CameraConfig *defaultConfig = new CameraConfig(ConfigPath::defaultConfigPath());
+  if(!defaultConfig->isValid()) {
     std::cerr << "Failed to load the default config file" << std::endl;
     return;
   }
-  camera.setConfig(*defaultConfig);
+  camera.setConfig(defaultConfig);
     
   // Setup daylite node, pubs, and subs
   std::shared_ptr<node> node = node::create_node("boyd");
@@ -60,7 +59,7 @@ void BoydRunner::run()
     
     // Only process/send frames if someone cares about them
     if(framePub->subscriber_count() > 0) {
-      std::cout << "Num subscribers: " << framePub->subscriber_count() << std::endl;
+      //std::cout << "Num subscribers: " << framePub->subscriber_count() << std::endl;
       
       // Try to open the camera, if not already open
       if(!camera.isOpen()) {
@@ -78,14 +77,16 @@ void BoydRunner::run()
       if(camera.update()) {
         // Publish frame and blobs over daylite
         BoydRunner::createFrameData(fd);
+        fd.frameNum = frameNum;
         framePub->publish(bson(fd.bind()));
+        std::cout << "Sent frame " << frameNum << std::endl;
       
         // Frame timing
         ++frameNum;
         auto duration = steady_clock::now() - startTime;
         if(duration >= seconds(1)) {
-          std::cout << "Published " << frameNum << " frames in " << duration_cast<milliseconds>(duration).count() << std::endl;
-          frameNum = 0;
+          //std::cout << "Published " << frameNum << " frames in " << duration_cast<milliseconds>(duration).count() << std::endl;
+          //frameNum = 0;
           startTime = steady_clock::now();
         }
       }
@@ -117,6 +118,10 @@ void BoydRunner::run()
       std::vector<boyd::camera_config> camConfigs;
       for(const std::string &confName : confNames) {
         CameraConfig cameraConfig(ConfigPath::pathToSysConfig(confName));
+        if(!cameraConfig.isValid()) {
+          std::cout << confName << " is not a valid config" << std::endl;
+          continue;
+        }
         boyd::camera_config camConfig;
         camConfig.config_name = confName;
         const int numChannels = cameraConfig.numChannels();
@@ -170,11 +175,13 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
     
     // Try to load the new config
     std::cout << "Loading new config file: " << path << std::endl;
-    const Config *const newConfig = Config::load(path);
-    if(!newConfig)
-      std::cerr << "Failed to load the new config file" << std::endl;
+    const CameraConfig *const newConfig = new CameraConfig(path);
+    if(!newConfig->isValid()) {
+      std::cerr << "New config file is not valid" << std::endl;
+      delete newConfig;
+    }
     else
-      camera.setConfig(*newConfig);
+      camera.setConfig(newConfig);
   }
   
   if(s.camera_configs.some()) {
@@ -188,7 +195,7 @@ void BoydRunner::receivedSettings(const bson &msg, void *)
       // Iterate through each channel
       for(const channel_config &cc : chConfigs) {
         const CameraConfig::HsvBounds hsvs = {cc.bh, cc.bs, cc.bv, cc.th, cc.ts, cc.tv};
-        camConfig.addChannel(cc.channel_name, hsvs);
+        camConfig.addChannel(hsvs);
       }
       
       // Save camera config

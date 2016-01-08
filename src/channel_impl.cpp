@@ -23,14 +23,14 @@ void ChannelImpl::setImage(const cv::Mat &image)
   m_dirty = true;
 }
 
-ObjectVector ChannelImpl::objects(const Config &config)
+ObjectVector ChannelImpl::objects(const CameraConfig &config, const int channelNum)
 {
   if(m_dirty) {
     update(m_image);
     m_dirty = false;
   }
   
-  return findObjects(config);
+  return findObjects(config, channelNum);
 }
 
 // ChannelImplManager
@@ -66,14 +66,14 @@ void HsvChannelImpl::update(const cv::Mat &image)
   cv::cvtColor(image, m_image, cv::COLOR_BGR2HSV);
 }
 
-ObjectVector HsvChannelImpl::findObjects(const Config &config)
+ObjectVector HsvChannelImpl::findObjects(const CameraConfig &config, const int channelNum)
 {
   if(m_image.empty())
     return ObjectVector();
   
-  // TODO: This lookup is really slow compared to the rest of the algorithm
-  cv::Vec3b top(config.intValue("th"), config.intValue("ts"), config.intValue("tv"));
-  cv::Vec3b bottom(config.intValue("bh"), config.intValue("bs"), config.intValue("bv"));
+  const CameraConfig::HsvBounds hsvs = config.channel(channelNum);
+  cv::Vec3b top(hsvs.th, hsvs.ts, hsvs.tv);
+  cv::Vec3b bottom(hsvs.bh, hsvs.bs, hsvs.bv);
   
   cv::Mat fixed = m_image;
   if(bottom[0] > top[0]) {

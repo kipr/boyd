@@ -2,15 +2,8 @@
 #define _CAMERA_HPP_
 
 #include <opencv2/highgui/highgui.hpp>
-#include <battlecreek/frame_data.hpp>
 #include "channel.hpp"
-#include "config.hpp"
-
-// These keys are used in the config files
-#define CAMERA_GROUP ("camera")
-#define CAMERA_CHANNEL_NUM_KEY ("num_channels")
-#define CAMERA_CHANNEL_TYPE_KEY ("type")
-#define CAMERA_CHANNEL_GROUP_PREFIX ("channel_")
+#include "camera_config.hpp"
 
 class Camera
 {
@@ -25,7 +18,7 @@ public:
   
   void setWidth(const int width);
   void setHeight(const int height);
-  void setConfig(const Config &config);
+  void setConfig(const CameraConfig *config);
   
   int imageWidth() const;
   int imageHeight() const;
@@ -39,7 +32,7 @@ private:
   cv::VideoCapture *m_capture;
   cv::Mat m_image;
   
-  Config m_config;
+  const CameraConfig *m_config;
   ChannelPtrVector m_channels;
 };
 

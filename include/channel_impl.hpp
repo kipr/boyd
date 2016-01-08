@@ -5,7 +5,7 @@
 //#include <zbar.h>
 
 #include "object.hpp"
-#include "config.hpp"
+#include "camera_config.hpp"
 
 class ChannelImpl
 {
@@ -14,11 +14,11 @@ public:
   virtual ~ChannelImpl();
   
   void setImage(const cv::Mat &image);
-  ObjectVector objects(const Config &config);
+  ObjectVector objects(const CameraConfig &config, const int channelNum);
   
 protected:
   virtual void update(const cv::Mat &image) = 0;
-  virtual ObjectVector findObjects(const Config &config) = 0;
+  virtual ObjectVector findObjects(const CameraConfig &config, const int channelNum) = 0;
   
 private:
   bool m_dirty;
@@ -43,7 +43,7 @@ class HsvChannelImpl : public ChannelImpl
 public:
   HsvChannelImpl();
   virtual void update(const cv::Mat &image);
-  virtual ObjectVector findObjects(const Config &config);
+  virtual ObjectVector findObjects(const CameraConfig &config, const int channelNum);
   
 private:
   cv::Mat m_image;

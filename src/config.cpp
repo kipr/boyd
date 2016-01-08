@@ -49,20 +49,20 @@ bool Config::save(const std::string &path) const
 	return true;
 }
 
-void Config::beginGroup(const std::string &group)
+void Config::beginGroup(const std::string &group) const
 {
 	m_groups.push_back(safeKey(group));
 	m_cachedGroup = "";
 }
 
-void Config::endGroup()
+void Config::endGroup() const
 {
 	if(m_groups.empty()) return;
 	m_groups.pop_back();
 	m_cachedGroup = "";
 }
 
-void Config::clearGroup()
+void Config::clearGroup() const
 {
 	m_groups.clear();
 }

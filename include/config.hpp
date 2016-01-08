@@ -14,9 +14,9 @@ public:
 	static Config *load(const std::string &path);
 	bool save(const std::string &path) const;
 	
-	void beginGroup(const std::string &group);
-	void endGroup();
-	void clearGroup();
+	void beginGroup(const std::string &group) const;
+	void endGroup() const;
+	void clearGroup() const;
 	
 	void clear();
 	
@@ -41,7 +41,7 @@ private:
 	std::string group() const;
 	
 	std::map<std::string, std::string> m_config;
-	std::vector<std::string> m_groups;
+	mutable std::vector<std::string> m_groups;
 	mutable std::string m_cachedGroup;
 };
 

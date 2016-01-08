@@ -2,13 +2,13 @@
 #define _CHANNEL_HPP_
 
 #include "object.hpp"
-#include "config.hpp"
+#include "camera_config.hpp"
 #include "channel_impl.hpp"
 
 class Channel
 {
 public:
-  Channel(const Config &config);
+  Channel(const CameraConfig &config, const int channelNum);
   ~Channel();
   
   void invalidate();
@@ -17,10 +17,11 @@ public:
   const ObjectVector *objects() const;
 #endif
   
-  void setConfig(const Config &config);
+  void setConfig(const CameraConfig &config, const int channelNum);
   
 private:
-  Config m_config;
+  CameraConfig m_config;
+  int m_channelNum;
   mutable ObjectVector m_objects;
   ChannelImpl *m_impl;
   mutable bool m_valid;

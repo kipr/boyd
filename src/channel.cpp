@@ -1,19 +1,17 @@
 #include "channel.hpp"
 #include <iostream>
 
-Channel::Channel(const Config &config)
+Channel::Channel(const CameraConfig &config, const int channelNum)
   : m_config(config),
+  m_channelNum(channelNum),
   m_impl(0),
   m_valid(false)
 {
   m_objects.clear();
   
   // Get channel type from config
-  const std::string type = config.stringValue("type");
-  if(type.empty()) {
-    std::cerr << "No type specified in config." << std::endl;
-    return;
-  }
+  // TODO: Could this type be wrong?
+  const std::string type = config.channelType(channelNum);
   
   // Choose channel implementation based on channel type
   m_impl = ChannelImplManager::channelImpl(type);
@@ -46,7 +44,7 @@ const ObjectVector *Channel::objects() const
     return 0;
   if(!m_valid) {
     m_objects.clear();
-    m_objects = m_impl->objects(m_config);
+    m_objects = m_impl->objects(m_config, m_channelNum);
     std::sort(m_objects.begin(), m_objects.end(), LargestAreaFirst);
     m_valid = true;
   }
@@ -54,8 +52,9 @@ const ObjectVector *Channel::objects() const
   return &m_objects;
 }
 
-void Channel::setConfig(const Config &config)
+void Channel::setConfig(const CameraConfig &config, const int channelNum)
 {
   m_config = config;
+  m_channelNum = channelNum;
   m_valid = false;
 }

@@ -80,8 +80,9 @@ void Camera::setHeight(const int height)
   m_capture->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 }
 
-void Camera::setConfig(const Config &config)
+void Camera::setConfig(const CameraConfig *config)
 {
+  // TODO: delete previous config?
   m_config = config;
   updateChannelsFromConfig();
 }
@@ -122,18 +123,8 @@ void Camera::updateChannelsFromConfig()
   m_channels.clear();
   
   // Populate channels based on current config
-  // TODO: Use CameraConfig to do this
-  m_config.clearGroup();
-  m_config.beginGroup(CAMERA_GROUP);
-  const int numChannels = m_config.intValue(CAMERA_CHANNEL_NUM_KEY);
-  const int numSupported = std::min(numChannels, 4); // Max 4 channels
-  for(int i  = 0; i < numSupported; ++i) {
-    std::stringstream stream;
-    stream << CAMERA_CHANNEL_GROUP_PREFIX;
-    stream << i;
-    m_config.beginGroup(stream.str());
-    m_channels.push_back(new Channel(m_config));
-    m_config.endGroup();
+  const int numChannels = m_config->numChannels();
+  for(int chNum = 0; chNum < numChannels; ++chNum) {
+    m_channels.push_back(new Channel(*m_config, chNum));
   }
-  m_config.endGroup();
 }
