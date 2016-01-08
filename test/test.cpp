@@ -36,7 +36,7 @@ int main()
   prevTime = steady_clock::now();
   while(!daylite::should_exit()) {
     daylite::spinner::spin_once();
-    std::this_thread::sleep_for(milliseconds(50));
+    std::this_thread::sleep_for(milliseconds(1000));
   }
   
   return 0;
@@ -51,6 +51,7 @@ void receivedFrame(const bson &msg, void *arg)
   //std::cout << "Received frame " << ++frameNum << std::endl;
   
   frame_data fd = frame_data::unbind(msg);
+  std::cout << "Received frame " << fd.frameNum << std::endl;
   
   Mat frame = Mat::zeros(fd.height, fd.width, 16);
   int offset = 0;
