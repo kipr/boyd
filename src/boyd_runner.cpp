@@ -20,7 +20,7 @@ using namespace std::chrono;
 void BoydRunner::run()
 { 
   // Load default config file
-  CameraConfig *defaultConfig = new CameraConfig(ConfigPath::defaultConfigPath());
+  const CameraConfig *const defaultConfig = new CameraConfig(ConfigPath::defaultConfigPath());
   if(!defaultConfig->isValid()) {
     std::cerr << "Failed to load the default config file" << std::endl;
     return;

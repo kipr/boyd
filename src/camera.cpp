@@ -123,8 +123,9 @@ void Camera::updateChannelsFromConfig()
   m_channels.clear();
   
   // Populate channels based on current config
-  const int numChannels = m_config->numChannels();
-  for(int chNum = 0; chNum < numChannels; ++chNum) {
-    m_channels.push_back(new Channel(*m_config, chNum));
+  if(m_config) {
+    const int numChannels = m_config->numChannels();
+    for(int chNum = 0; chNum < numChannels; ++chNum)
+      m_channels.push_back(new Channel(*m_config, chNum));
   }
 }
