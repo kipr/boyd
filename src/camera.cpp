@@ -82,9 +82,22 @@ void Camera::setHeight(const int height)
 
 void Camera::setConfig(const CameraConfig *config)
 {
-  // TODO: delete previous config?
+  // Cleanup previous channels
+  auto it = m_channels.begin();
+  for(; it != m_channels.end(); ++it)
+    delete *it;
+  m_channels.clear();
+  
+  // Delete previous config and set new config
+  delete m_config;
   m_config = config;
-  updateChannelsFromConfig();
+  
+  // Populate channels based on new config
+  if(m_config) {
+    const int numChannels = m_config->numChannels();
+    for(int chNum = 0; chNum < numChannels; ++chNum)
+      m_channels.push_back(new Channel(*m_config, chNum));
+  }
 }
 
 int Camera::imageWidth() const
@@ -113,19 +126,4 @@ const ObjectVector *Camera::objects(int channelNum) const
     return 0;
   
   return m_channels[channelNum]->objects();
-}
-
-void Camera::updateChannelsFromConfig()
-{
-  auto it = m_channels.begin();
-  for(; it != m_channels.end(); ++it)
-    delete *it;
-  m_channels.clear();
-  
-  // Populate channels based on current config
-  if(m_config) {
-    const int numChannels = m_config->numChannels();
-    for(int chNum = 0; chNum < numChannels; ++chNum)
-      m_channels.push_back(new Channel(*m_config, chNum));
-  }
 }
