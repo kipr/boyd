@@ -85,7 +85,7 @@ bool Config::boolValue(const std::string &key) const
 
 int Config::intValue(const std::string &key) const
 {
-	std::stringstream stream(stringValue(key));
+	std::istringstream stream(stringValue(key));
 	int value = 0;
 	stream >> value;
 	return value;
@@ -93,7 +93,7 @@ int Config::intValue(const std::string &key) const
 
 double Config::doubleValue(const std::string &key) const
 {
-	std::stringstream stream(stringValue(key));
+	std::istringstream stream(stringValue(key));
 	double value = 0;
 	stream >> value;
 	return value;
@@ -115,14 +115,14 @@ void Config::setValue(const std::string &key, const bool &value)
 
 void Config::setValue(const std::string &key, const int &value)
 {
-	std::stringstream stream;
+	std::ostringstream stream;
 	stream << value;
 	setValue(key, stream.str());
 }
 
 void Config::setValue(const std::string &key, const double &value)
 {
-	std::stringstream stream;
+	std::ostringstream stream;
 	stream << value;
 	setValue(key, stream.str());
 }
