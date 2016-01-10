@@ -79,7 +79,7 @@ void BoydRunner::run()
         BoydRunner::createFrameData(fd);
         fd.frameNum = frameNum;
         framePub->publish(bson(fd.bind()));
-        //std::cout << "Sent frame " << frameNum << std::endl;
+        std::cout << "Sent frame " << frameNum << std::endl;
       
         // Frame timing
         ++frameNum;
