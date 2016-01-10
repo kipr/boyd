@@ -5,6 +5,8 @@
 #include "channel.hpp"
 #include "camera_config.hpp"
 
+class v4l;
+
 class Camera
 {
 public:
@@ -29,7 +31,7 @@ public:
 private:
   void updateChannelsFromConfig();
   
-  cv::VideoCapture *m_capture;
+  v4l *m_capture;
   cv::Mat m_image;
   
   const CameraConfig *m_config;
