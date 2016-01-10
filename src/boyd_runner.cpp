@@ -64,8 +64,8 @@ void BoydRunner::run()
       // Try to open the camera, if not already open
       if(!camera.isOpen()) {
         if(camera.open(0)) {
-          camera.setWidth(640);
-          camera.setHeight(480);
+          camera.setWidth(320);
+          camera.setHeight(240);
           std::cout << "Camera connected" << std::endl;
         }
         else
