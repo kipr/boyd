@@ -145,8 +145,14 @@ private:
     }
 
     assert(buf.index < _buffers.size());
-    assert(240 * 320 * 3 * buf.bytesused);
-    mat = cv::Mat(240, 320, CV_8UC3, _buffers[buf.index].start);
+    
+    cv::Size sz(_fmt.fmt.pix.width, _fmt.fmt.pix.height);
+    if(mat.elemSize() != 3 || mat.size() != sz) mat = cv::Mat(sz, CV_8UC3);
+    for(size_t pos = 0, i = 0; pos < buf.length; pos += buf.bytesperline)
+    {
+      memcpy(mat.ptr(i++), _buffers[buf.index].start + pos, sz.width * mat.elemSize());
+    }
+    
     if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
     {
       cerr << "VIDIOC_QBUF (" << errno << ")" << endl;
@@ -239,20 +245,20 @@ private:
       }
     }
 
-    struct v4l2_format fmt;
-    memset(&fmt, 0, sizeof(fmt));
-    fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width       = 320;
-    fmt.fmt.pix.height      = 240;
-    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
-    fmt.fmt.pix.field       = V4L2_FIELD_NONE;
+    
+    memset(&_fmt, 0, sizeof(fmt));
+    _fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    _fmt.fmt.pix.width       = 320;
+    _fmt.fmt.pix.height      = 240;
+    _fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
+    _fmt.fmt.pix.field       = V4L2_FIELD_NONE;
 
     if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) cerr << "VIDIOC_S_FMT (" << errno << ")" << endl;
 
-    unsigned min = fmt.fmt.pix.width * 2;
-    if (fmt.fmt.pix.bytesperline < min) fmt.fmt.pix.bytesperline = min;
-    min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
-    if (fmt.fmt.pix.sizeimage < min) fmt.fmt.pix.sizeimage = min;
+    unsigned min = _fmt.fmt.pix.width * 2;
+    if (_fmt.fmt.pix.bytesperline < min) _fmt.fmt.pix.bytesperline = min;
+    min = fmt.fmt.pix.bytesperline * _fmt.fmt.pix.height;
+    if (_fmt.fmt.pix.sizeimage < min) _fmt.fmt.pix.sizeimage = min;
     return init_mmap();
   }
   
@@ -315,6 +321,7 @@ private:
   }
   
   std::vector<buffer> _buffers;
+  struct v4l2_format _fmt;
 };
 
 Camera::Camera()
