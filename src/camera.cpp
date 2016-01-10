@@ -23,6 +23,8 @@
 
 #include <linux/videodev2.h>
 
+using namespace std;
+
 class v4l
 {
 public:
@@ -239,23 +241,12 @@ private:
     struct v4l2_format fmt;
     memset(&fmt, 0, sizeof(fmt));
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if (force_format)
-    {
-      fmt.fmt.pix.width       = 320;
-      fmt.fmt.pix.height      = 240;
-      fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
-      fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
+    fmt.fmt.pix.width       = 320;
+    fmt.fmt.pix.height      = 240;
+    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
+    fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
-      if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt)) errno_exit("VIDIOC_S_FMT");
-    }
-    else
-    {
-      /* Preserve original settings as set by v4l2-ctl for example */
-      if (-1 == xioctl(fd, VIDIOC_G_FMT, &fmt))
-      {
-        cerr << "VIDIOC_G_FMT (" << errno << ")" << endl;
-      }
-    }
+    if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt)) errno_exit("VIDIOC_S_FMT");
 
     unsigned min = fmt.fmt.pix.width * 2;
     if (fmt.fmt.pix.bytesperline < min) fmt.fmt.pix.bytesperline = min;
