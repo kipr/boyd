@@ -144,7 +144,7 @@ private:
     }
 
     assert(buf.index < _buffers.size());
-    mat = imdecode(cv::Mat(sz, CV_8UC3, _buffers[buf.index].start),
+    mat = imdecode(cv::Mat(240, 320, CV_8UC3, _buffers[buf.index].start),
       CV_LOAD_IMAGE_COLOR, &mat);
     
     if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
