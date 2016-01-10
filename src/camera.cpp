@@ -145,6 +145,7 @@ private:
     }
 
     assert(buf.index < _buffers.size());
+    assert(240 * 320 * 3 * buf.bytesused);
     mat = cv::Mat(240, 320, CV_8UC3, _buffers[buf.index].start);
     if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
     {
