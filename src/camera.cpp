@@ -76,13 +76,13 @@ public:
     {
       fd_set fds;
       FD_ZERO(&fds);
-      FD_SET(fd, &fds);
+      FD_SET(_fd, &fds);
 
       timeval tv;
       tv.tv_sec = 2;
       tv.tv_usec = 0;
 
-      int r = select(fd + 1, &fds, NULL, NULL, &tv);
+      int r = select(_fd + 1, &fds, NULL, NULL, &tv);
 
       if (-1 == r)
       {
@@ -146,7 +146,7 @@ private:
 
     assert(buf.index < _buffers.size());
     mat = cv::Mat(240, 320, CV_8UC3, _buffers[buf.index].start);
-    if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
+    if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
     {
       cerr << "VIDIOC_QBUF (" << errno << ")" << endl;
       return false;
@@ -165,13 +165,13 @@ private:
       buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
       buf.memory = V4L2_MEMORY_MMAP;
       buf.index = i;
-      if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
+      if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
       {
         cerr << "VIDIOC_QBUF (" << errno << ")" << endl;
       }
     }
     type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if (-1 == xioctl(fd, VIDIOC_STREAMON, &type))
+    if (-1 == xioctl(_fd, VIDIOC_STREAMON, &type))
     {
       cerr << "VIDIOC_STREAMON (" << errno << ")" << endl;
     }
@@ -179,22 +179,22 @@ private:
   
   void uninit_device(void)
   {
-    for (unsigned i = 0; i < n_buffers; ++i)
+    for (auto it = _buffers.begin(); it != _buffers.end(); ++it)
     {
-      if (-1 == munmap(buffers[i].start, buffers[i].length))
+      if (-1 == munmap(it->start, it->length))
       {
         cerr << "munmap failed (" << errno << ")" << endl;
       }
     }
-    free(buffers);
   }
   
   bool init_device()
   {
     struct v4l2_capability cap;
-    if (xioctl(fd, VIDIOC_QUERYCAP, &cap) < 0)
+    if (xioctl(_fd, VIDIOC_QUERYCAP, &cap) < 0)
     {
-      if (EINVAL == errno) {
+      if (EINVAL == errno)
+      {
         cerr << _device << " is no V4L2 device" << endl;
         return false;
       }
@@ -222,13 +222,13 @@ private:
     memset(&cropcap, 0, sizeof(cropcap));
     cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (0 == xioctl(fd, VIDIOC_CROPCAP, &cropcap))
+    if (0 == xioctl(_fd, VIDIOC_CROPCAP, &cropcap))
     {
       struct v4l2_crop crop;
       crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
       crop.c = cropcap.defrect;
 
-      if (-1 == xioctl(fd, VIDIOC_S_CROP, &crop))
+      if (-1 == xioctl(_fd, VIDIOC_S_CROP, &crop))
       {
         switch (errno)
         {
@@ -246,7 +246,7 @@ private:
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
     fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
-    if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt)) errno_exit("VIDIOC_S_FMT");
+    if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) errno_exit("VIDIOC_S_FMT");
 
     unsigned min = fmt.fmt.pix.width * 2;
     if (fmt.fmt.pix.bytesperline < min) fmt.fmt.pix.bytesperline = min;
@@ -265,7 +265,7 @@ private:
     req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = V4L2_MEMORY_MMAP;
   
-    if (-1 == xioctl(fd, VIDIOC_REQBUFS, &req))
+    if (-1 == xioctl(_fd, VIDIOC_REQBUFS, &req))
     {
       if (EINVAL == errno)
       {
@@ -296,7 +296,7 @@ private:
       buf.memory = V4L2_MEMORY_MMAP;
       buf.index  = i;
 
-      if (-1 == xioctl(fd, VIDIOC_QUERYBUF, &buf)
+      if (-1 == xioctl(_fd, VIDIOC_QUERYBUF, &buf)
       {
         cerr << "VIDIOC_QUERYBUF (" << errno << ")" << endl;
       }
