@@ -148,9 +148,10 @@ private:
     
     cv::Size sz(_fmt.fmt.pix.width, _fmt.fmt.pix.height);
     if(mat.elemSize() != 3 || mat.size() != sz) mat = cv::Mat(sz, CV_8UC3);
-    for(size_t pos = 0, i = 0; pos < buf.length; pos += buf.bytesperline)
+    for(size_t pos = 0, i = 0; pos < buf.length; pos += _fmt.fmt.pix.bytesperline)
     {
-      memcpy(mat.ptr(i++), _buffers[buf.index].start + pos, sz.width * mat.elemSize());
+      const uint8_t *const p = reinterpret_cast<const uint8_t *>(_buffers[buf.index].start) + pos;
+      memcpy(mat.ptr(i++), p, sz.width * mat.elemSize());
     }
     
     if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
@@ -246,7 +247,7 @@ private:
     }
 
     
-    memset(&_fmt, 0, sizeof(fmt));
+    memset(&_fmt, 0, sizeof(_fmt));
     _fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     _fmt.fmt.pix.width       = 320;
     _fmt.fmt.pix.height      = 240;
