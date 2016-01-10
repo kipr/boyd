@@ -130,7 +130,6 @@ private:
   bool read_frame(cv::Mat &mat)
   {
     struct v4l2_buffer buf;
-    unsigned int i = 0;
     memset(&buf, 0, sizeof(buf));
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     buf.memory = V4L2_MEMORY_MMAP;
@@ -145,14 +144,8 @@ private:
     }
 
     assert(buf.index < _buffers.size());
-    
-    cv::Size sz(_fmt.fmt.pix.width, _fmt.fmt.pix.height);
-    if(mat.elemSize() != 3 || mat.size() != sz) mat = cv::Mat(sz, CV_8UC3);
-    for(size_t pos = 0, i = 0; pos < buf.length; pos += _fmt.fmt.pix.bytesperline)
-    {
-      const uint8_t *const p = reinterpret_cast<const uint8_t *>(_buffers[buf.index].start) + pos;
-      memcpy(mat.ptr(i++), p, sz.width * mat.elemSize());
-    }
+    mat = imdecode(cv::Mat(1, buf.bytesused, _buffers[buf.index].start, CV_8UC1),
+      CV_LOAD_IMAGE_COLOR, &mat);
     
     if (-1 == xioctl(_fd, VIDIOC_QBUF, &buf))
     {
@@ -246,9 +239,8 @@ private:
       }
     }
 
-    
     memset(&_fmt, 0, sizeof(_fmt));
-    _fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    _fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     _fmt.fmt.pix.width       = 320;
     _fmt.fmt.pix.height      = 240;
     _fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
