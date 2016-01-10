@@ -76,9 +76,9 @@ void BoydRunner::run()
       // Only send frames if update succeeded
       if(camera.update()) {
         // Publish frame and blobs over daylite
-        BoydRunner::createFrameData(fd);
+        //BoydRunner::createFrameData(fd);
         fd.frameNum = frameNum;
-        framePub->publish(bson(fd.bind()));
+        //framePub->publish(bson(fd.bind()));
         std::cout << "Sent frame " << frameNum << std::endl;
       
         // Frame timing
