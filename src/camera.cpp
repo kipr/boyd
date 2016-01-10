@@ -254,11 +254,11 @@ private:
     _fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
     _fmt.fmt.pix.field       = V4L2_FIELD_NONE;
 
-    if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) cerr << "VIDIOC_S_FMT (" << errno << ")" << endl;
+    if (-1 == xioctl(_fd, VIDIOC_S_FMT, &_fmt)) cerr << "VIDIOC_S_FMT (" << errno << ")" << endl;
 
     unsigned min = _fmt.fmt.pix.width * 2;
     if (_fmt.fmt.pix.bytesperline < min) _fmt.fmt.pix.bytesperline = min;
-    min = fmt.fmt.pix.bytesperline * _fmt.fmt.pix.height;
+    min = _fmt.fmt.pix.bytesperline * _fmt.fmt.pix.height;
     if (_fmt.fmt.pix.sizeimage < min) _fmt.fmt.pix.sizeimage = min;
     return init_mmap();
   }
