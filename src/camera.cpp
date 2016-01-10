@@ -258,7 +258,6 @@ private:
   bool init_mmap(void)
   {
     struct v4l2_requestbuffers req;
-
     memset(&req, 0, sizeof(req));
 
     req.count = 4;
@@ -310,6 +309,8 @@ private:
         cerr << "Map failed (" << errno << ")" << endl;
       }
     }
+    
+    return true;
   }
   
   std::vector<buffer> _buffers;
