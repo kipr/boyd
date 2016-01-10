@@ -54,7 +54,7 @@ public:
       return false;
     }
 
-    int fd = open(_device.c_str(), O_RDWR | O_NONBLOCK, 0);
+    int fd = ::open(_device.c_str(), O_RDWR | O_NONBLOCK, 0);
     if(fd < 0)
     {
       fprintf(stderr, "Cannot open '%s': %d, %s\n", _device.c_str(), errno, strerror(errno));
@@ -246,7 +246,7 @@ private:
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
     fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
-    if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) errno_exit("VIDIOC_S_FMT");
+    if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) cerr << "VIDIOC_S_FMT (" << errno << ")" << endl;
 
     unsigned min = fmt.fmt.pix.width * 2;
     if (fmt.fmt.pix.bytesperline < min) fmt.fmt.pix.bytesperline = min;
@@ -296,7 +296,7 @@ private:
       buf.memory = V4L2_MEMORY_MMAP;
       buf.index  = i;
 
-      if (-1 == xioctl(_fd, VIDIOC_QUERYBUF, &buf)
+      if (-1 == xioctl(_fd, VIDIOC_QUERYBUF, &buf))
       {
         cerr << "VIDIOC_QUERYBUF (" << errno << ")" << endl;
       }
