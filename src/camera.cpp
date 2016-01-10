@@ -245,7 +245,7 @@ private:
     fmt.fmt.pix.width       = 320;
     fmt.fmt.pix.height      = 240;
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
-    fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
+    fmt.fmt.pix.field       = V4L2_FIELD_NONE;
 
     if (-1 == xioctl(_fd, VIDIOC_S_FMT, &fmt)) cerr << "VIDIOC_S_FMT (" << errno << ")" << endl;
 
